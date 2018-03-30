@@ -9,4 +9,5 @@ color_profiles/
 # Data for now
 data/
 
+src/plots/*.png
 poster.pdf

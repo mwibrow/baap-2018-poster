@@ -34,8 +34,8 @@ p <- ggplot(bx.df, aes(x=Pair, y=Accuracy, fill=Test, color=Test)) +
 p <- p + theme(
     text=element_text(family="Cabin", size=40),
     axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),
-    axis.title.x = element_text(margin = margin(t = -15, r = 0, b = 0, l = 0)))
+    axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0)))
 p <- p + scale_fill_manual(values=c(HV, LV))
 p <- p + scale_color_manual(values=c(HV, LV))
 p <- p + facet_grid(Group~.)
-ggsave("axb-boxplot.png", width=width, height=height)
+ggsave("axb-boxplot.png", width=width, height=height, dpi=600)
