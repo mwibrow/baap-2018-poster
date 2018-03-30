@@ -5,18 +5,18 @@ showtext_auto()
 library(ggplot2)
 library(plyr)
 
-oddity <- read.csv(file="AXB-data.csv", header=TRUE, sep=",")
-oddity$Pair <- apply(oddity, 1, function(row) {
+axb.df <- read.csv(file="AXB-data.csv", header=TRUE, sep=",")
+axb.df$Pair <- apply(axb.df, 1, function(row) {
     stimuli <- row[c('stim1', 'stim2', 'stim3')]
     pair <- sort(unique(stimuli))
     label <- paste(pair, collapse='-')
     return (label)
 })
-oddity$test <- factor(oddity$test, levels=c('pre', 'post'))
-oddity$group <- factor(oddity$group)
-oddity$Pair <- factor(oddity$Pair)
+axb.df$test <- factor(axb.df$test, levels=c('pre', 'post'))
+axb.df$group <- factor(axb.df$group)
+axb.df$Pair <- factor(axb.df$Pair)
 
-bx.df <- ddply(oddity, c('group', 'test', 'participant', 'Pair'), function(subset) {
+bx.df <- ddply(axb.df, c('group', 'test', 'participant', 'Pair'), function(subset) {
     Trials <- nrow(subset)
     Correct = sum(subset$correct.response)
     Accuracy = Correct / Trials * 100
