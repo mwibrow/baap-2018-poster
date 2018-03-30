@@ -1,0 +1,12 @@
+# Build files
+build/
+color_profiles/
+
+# IPython / Jupyter stuff
+.ipynb_checkpoints/
+*.ipynb
+
+# Data for now
+data/
+
+poster.pdf

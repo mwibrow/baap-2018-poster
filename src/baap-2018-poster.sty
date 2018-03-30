@@ -1,0 +1,92 @@
+% !TEX root = ./main.tex
+\usepackage{silence}
+\usepackage[prefix=]{xcolor-material}
+%\usetheme{confposter}
+
+\RequirePackage{baap-2018-fonts}
+\RequirePackage{baap-2018-colors}
+
+\def\paragraph#1{{\vskip1ex\leavevmode\noindent%
+\usebeamercolor[fg]{paragraph}\textbf{\large#1}}}
+\setbeamercolor{paragraph}{fg=kau-light-blue,bg=white}
+\setbeamercolor{block title}{fg=white,bg=kau}
+\setbeamercolor{block body}{fg=Black,bg=white}
+\setbeamercolor{block alerted title}{fg=white,bg=blue!70}
+\setbeamercolor{block alerted body}{fg=black,bg=blue!10}
+\setbeamerfont*{block title}{family=\Cabin,series=\bfseries,size=\Large}
+\setbeamertemplate{itemize item}{\color{kau-yellow}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{kau}$\blacktriangleright$}
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\newlength{\threecolwid}
+\setlength{\sepwid}{0.024\paperwidth} % Separation width (white space) between columns
+\setlength{\onecolwid}{0.22\paperwidth} % Width of one column
+\setlength{\twocolwid}{0.464\paperwidth} % Width of two columns
+\setlength{\threecolwid}{0.708\paperwidth} % Width of three columns
+\setlength{\topmargin}{-0.5in} % Reduce the top margin size
+%-----------------------------------------------------------
+
+\usepackage{graphicx}  % Required for including images
+
+\setbeamercolor{headline}{fg=White,bg=kau}
+\setbeamertemplate{headline}{%
+\vspace*{-0.5in}
+\leavevmode
+\begin{beamercolorbox}[wd=\paperwidth,dp=0in]{headline}
+\vspace*{5mm}%
+\begin{columns}
+  \begin{column}[b]{0.78125\linewidth}
+    \Cabin%
+    \leavevmode\flushleft
+     \usebeamercolor{title in headline}{\color{fg}%
+     \Huge\textbf{\inserttitle}\\[1.75ex]}
+     \usebeamercolor{author in headline}{\color{fg}
+       \large{\insertauthor}\\[1ex]}
+     \usebeamercolor{institute in headline}{\color{fg}
+     	{\insertinstitute}\\[1ex]}
+     \vspace{0.25in}
+  \end{column}
+  \begin{column}[b]{0.15\linewidth}
+    \llap{\includegraphics[width=\linewidth]{images/ucl_logo.jpg}\hskip1em}
+    \rlap{\includegraphics[width=\linewidth]{images/kau_logo.jpg}}
+    \\[1em]\hbox{}
+  \end{column}
+  \vspace{0.25in}
+\end{columns}
+\end{beamercolorbox}%
+\vspace*{0in}
+}
+
+\usepackage[natbib=true, bibstyle=authoryear, sorting=none, citestyle=numeric]{biblatex}
+\setbeamercolor*{bibliography entry title}{fg=text}
+\setbeamercolor*{bibliography entry author}{fg=text}
+\setbeamercolor*{bibliography entry location}{fg=text}
+\setbeamercolor*{bibliography entry note}{fg=text}
+\setbeamercolor*{bibliography item}{fg=text}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\WarningFilter{biblatex}{Patching footnotes failed}
+\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
+\defbibenvironment{bibliography}
+  {%
+    \list
+    {%
+      \printtext[labelnumberwidth]{%
+        \printfield{labelprefix}%
+        \printfield{labelnumber}%
+      }%
+    }%
+    {%
+      \setlength{\labelwidth}{\labelnumberwidth}%
+      \setlength{\leftmargin}{\labelwidth}%
+      \setlength{\labelsep}{0.5ex}%{\biblabelsep}%
+      \addtolength{\leftmargin}{\labelsep}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}%
+    }%
+    \renewcommand*{\makelabel}[1]{\hss##1}%
+  }%
+  {\endlist}
+  {\item}
+  \AtEveryCite{\color{kau-dark-grey}}
