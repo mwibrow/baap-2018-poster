@@ -1,3 +1,4 @@
+# Set up custom font
 library(showtext)
 font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
 showtext_auto()
@@ -7,35 +8,57 @@ library(plyr)
 
 axb.df <- read.csv(file="AXB-data.csv", header=TRUE, sep=",")
 axb.df$Pair <- apply(axb.df, 1, function(row) {
-    stimuli <- row[c('stim1', 'stim2', 'stim3')]
+    stimuli <- row[c("stim1", "stim2", "stim3")]
     pair <- sort(unique(stimuli))
-    label <- paste(pair, collapse='-')
+    label <- paste(pair, collapse="-")
     return (label)
 })
-axb.df$test <- factor(axb.df$test, levels=c('pre', 'post'))
+axb.df$test <- factor(axb.df$test, levels=c("pre", "post"))
 axb.df$group <- factor(axb.df$group)
 axb.df$Pair <- factor(axb.df$Pair)
 
-bx.df <- ddply(axb.df, c('group', 'test', 'participant', 'Pair'), function(subset) {
+bx.df <- ddply(axb.df, c("group", "test", "participant", "Pair"), function(subset) {
     Trials <- nrow(subset)
     Correct = sum(subset$correct.response)
     Accuracy = Correct / Trials * 100
     data.frame(Trials, Correct, Accuracy)
 })
-names(bx.df)[names(bx.df) == 'test'] <- 'Test'
-names(bx.df)[names(bx.df) == 'group'] <- 'Group'
+names(bx.df)[names(bx.df) == "test"] <- "Test"
+names(bx.df)[names(bx.df) == "group"] <- "Group"
 
-width = 7
-height = 5
+width <- 7
+height <- 5
+dpi <- 1200
+fontSize <- dpi * 80 / 600
 HV <- "#F8BBD0"
 LV <- "#E91E63"
+MD <- "#FFFFFF"
+
+# Do the plot
+dodge <- position_dodge(0.875)
 p <- ggplot(bx.df, aes(x=Pair, y=Accuracy, fill=Test, color=Test)) +
-    geom_boxplot(position=position_dodge(0.875)) + theme(legend.position="bottom")
+    geom_boxplot(position=dodge, aes(fill=Test, color=Test))
+
+# Theme stuff
 p <- p + theme(
-    text=element_text(family="Cabin", size=40),
+    legend.position="bottom",
+    text=element_text(family="Cabin", size=fontSize),
     axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),
     axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0)))
+
+# Manually set colors
 p <- p + scale_fill_manual(values=c(HV, LV))
 p <- p + scale_color_manual(values=c(HV, LV))
+
+# Add the facet variable
 p <- p + facet_grid(Group~.)
-ggsave("axb-boxplot.png", width=width, height=height, dpi=600)
+
+# Now add the medians. This must come after setting the facets.
+dat <- ggplot_build(p)$data[[1]]
+dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
+dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
+p <- p + geom_segment(
+  data=dat,
+  aes(x=xmin, xend=xmax, y=middle, yend=middle),inherit.aes=FALSE, colour=MD)
+#
+ggsave("axb-boxplot.png", width=width, height=height, units="in", dpi=dpi)
