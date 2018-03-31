@@ -1,8 +1,10 @@
 # Set up custom font
 library(showtext)
 font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
+font_add("Cabin-Italic", "../fonts/Cabin/Cabin-Italic.ttf")
 showtext_auto()
 
+# Load other libraries
 library(ggplot2)
 library(plyr)
 
@@ -32,7 +34,7 @@ dpi <- 1200
 fontSize <- dpi * 80 / 600
 HV <- "#F8BBD0"
 LV <- "#E91E63"
-MD <- "#FFFFFF"
+MD <- "#FCE4EC"
 
 # Do the plot
 dodge <- position_dodge(0.875)
@@ -47,10 +49,11 @@ p <- p + scale_y_continuous(expand=c(0,5), limit=c(0, 100),
 # Theme stuff
 p <- p + theme(
     legend.position="bottom",
-    panel.background=element_rect(fill="#efefef"),
-    panel.grid.major=element_line(color="#f7f7f7"),
+    panel.background=element_rect(fill="#eeeeee"),
+    panel.grid.major=element_line(color="#ffffff", linetype="13", lineend="round"),
+    axis.ticks = element_blank(),
     text=element_text(family="Cabin", size=fontSize),
-    axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5, family="Cabin-Italic"),
     axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0))) +
     ylab("Accuracy (%)")
 # Manually set colors
@@ -66,6 +69,6 @@ dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
 dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
 p <- p + geom_segment(
   data=dat,
-  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend='round', inherit.aes=FALSE, colour=MD)
+  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend='square', inherit.aes=FALSE, colour=MD)
 #
 ggsave("axb-boxplot.png", width=width, height=height, units="in", dpi=dpi)
