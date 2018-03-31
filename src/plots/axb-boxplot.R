@@ -44,8 +44,8 @@ p <- p + theme(
     legend.position="bottom",
     text=element_text(family="Cabin", size=fontSize),
     axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),
-    axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0)))
-
+    axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0))) +
+    ylab("Accuracy (%)")
 # Manually set colors
 p <- p + scale_fill_manual(values=c(HV, LV))
 p <- p + scale_color_manual(values=c(HV, LV))
