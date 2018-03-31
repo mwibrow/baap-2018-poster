@@ -39,9 +39,16 @@ dodge <- position_dodge(0.875)
 p <- ggplot(bx.df, aes(x=Pair, y=Accuracy, fill=Test, color=Test)) +
     geom_boxplot(position=dodge, aes(fill=Test, color=Test))
 
+# Axis stuff
+p <- p + scale_y_continuous(expand=c(0,5), limit=c(0, 100),
+                                minor_breaks=c(),
+                                breaks=seq(0,100,25),
+                                labels=seq(0,100,25))
 # Theme stuff
 p <- p + theme(
     legend.position="bottom",
+    panel.background=element_rect(fill="#efefef"),
+    panel.grid.major=element_line(color="#f7f7f7"),
     text=element_text(family="Cabin", size=fontSize),
     axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5),
     axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0))) +
