@@ -1,12 +1,16 @@
-# Set up custom font
+# Ensure packages are installed
+list.of.packages <- c("ggplot2", "showtext", "plyr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
 library(showtext)
+library(ggplot2)
+library(plyr)
+
+# Set up custom font
 font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
 font_add("Cabin-Italic", "../fonts/Cabin/Cabin-Italic.ttf")
 showtext_auto()
-
-# Load other libraries
-library(ggplot2)
-library(plyr)
 
 axb.df <- read.csv(file="AXB-data.csv", header=TRUE, sep=",")
 axb.df$Pair <- apply(axb.df, 1, function(row) {
