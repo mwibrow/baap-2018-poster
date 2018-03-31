@@ -32,8 +32,8 @@ width <- 7
 height <- 5
 dpi <- 1200
 fontSize <- dpi * 80 / 600
-HV <- "#F8BBD0"
-LV <- "#E91E63"
+POST <- "#F8BBD0"
+PRE <- "#E91E63"
 MD <- "#FCE4EC"
 
 # Do the plot
@@ -57,8 +57,8 @@ p <- p + theme(
     axis.title.x = element_text(margin = margin(t = -5, r = 0, b = -10, l = 0))) +
     ylab("Accuracy (%)")
 # Manually set colors
-p <- p + scale_fill_manual(values=c(HV, LV))
-p <- p + scale_color_manual(values=c(HV, LV))
+p <- p + scale_fill_manual(values=c(POST, PRE))
+p <- p + scale_color_manual(values=c(POST, PRE))
 
 # Add the facet variable
 p <- p + facet_grid(Group~.)
