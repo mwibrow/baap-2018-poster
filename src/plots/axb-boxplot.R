@@ -66,6 +66,6 @@ dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
 dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
 p <- p + geom_segment(
   data=dat,
-  aes(x=xmin, xend=xmax, y=middle, yend=middle),inherit.aes=FALSE, colour=MD)
+  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend='round', inherit.aes=FALSE, colour=MD)
 #
 ggsave("axb-boxplot.png", width=width, height=height, units="in", dpi=dpi)
