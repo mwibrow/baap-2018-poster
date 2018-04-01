@@ -53,6 +53,9 @@ p <- p + scale_y_continuous(expand=c(0,5), limit=c(0, 100),
 # Theme stuff
 p <- p + theme(
     legend.position="bottom",
+    legend.key=element_rect(
+      fill="transparent",
+      colour="transparent"),
     panel.background=element_rect(fill="#eeeeee"),
     panel.grid.major=element_line(color="#ffffff", linetype="13", lineend="round"),
     axis.ticks = element_blank(),
