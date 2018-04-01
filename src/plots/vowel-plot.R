@@ -11,11 +11,35 @@ ipa <- {}
 
 map <- "heed /i:/ hid /ɪ/ head /e/ heard /ɜ:/ had /æ/ hud /ʌ/ hard /ɑ:/ hod /ɒ/ hoard /ɔ:/ whod /u:/ hood /ʊ/"
 
+sse.df <- data.frame(
+  vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
+  f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
+  f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
+
+
 matches <- as.data.frame(str_match_all(map, "([a-z]+)\\s+/([^/]{1,2})/")[[1]])
 invisible(apply(matches, 1, FUN=function(row){
     ipa[row["V2"]] <<- row["V3"]
     monophthongs <<- c(monophthongs, row["V2"])
 }))
+
+f1s <- sse.df$f1
+f2s <- sse.df$f2
+mean.f1s <- mean(f1s)
+mean.f2s <- mean(f2s)
+sd.f1s <- sd(f1s)
+sd.f2s <- sd(f2s)
+sse.lob.df <- ddply(sse.df, c("vowel"), function(vowel) {
+    f1v <- vowel$f1
+    f2v <- vowel$f2
+    norm.f1v <- (f1v - mean.f1s) / sd.f1s
+    norm.f2v <- (f2v - mean.f2s) / sd.f2s
+
+    data.frame(f1=mean(norm.f1v), f2=mean(norm.f2v))
+})
+sse.lob.df$ipa <- ipa[as.character(sse.lob.df$vowel)]
+
+
 
 vwl.df <- rbind(
     read.csv("vowels-pre-LV.csv"),
@@ -84,8 +108,9 @@ colors$pre <-  "#F8BBD0"
 colors$post <- "#E91E63"
 colors$arrow <- "#444444"
 colors$ipa <- "#176FC1" # "#0288D1"
+colors$sse <- "#cccccc"
 
-dpi = 1200
+dpi = 300
 fontSize <- dpi * 80 / 600
 
 width = 7
@@ -114,27 +139,40 @@ p <- p + scale_x_reverse(
     breaks=seq(-2,2,1),
     labels=seq(-2,2,1))
 p <- p + coord_cartesian(xlim=c(2,-2), ylim=c(2, -2))
-
+p <- p + geom_point(
+    data=sse.lob.df,
+    aes(x=f2, y=f1, color='SSE'),
+    size=3)
+p <- p + geom_text(
+    data=sse.lob.df,
+    aes(x=f2, y=f1-0.2, label=ipa),
+    color=colors$sse,
+    family="DejaVuSans",
+    size=fontSize*0.4)
+p <- p + geom_segment(
+    data=df,
+    aes(x=f2_pre, xend=f2_post, y=f1_pre, yend=f1_post),
+    # arrow=arrow(type="closed", length=unit(0.075, "in")),
+    inherit.aes=FALSE,
+    colour=colors$arrow)
 p <- p + geom_point(
     data=lob.mn.df,
     aes(x=f2, y=f1, color=Test),
     size=3)
-p <- p + scale_fill_manual(values=c(colors$pre, colors$post))
-p <- p + scale_color_manual(values=c(colors$pre, colors$post))
-p <- p + geom_segment(
-    data=df,
-    aes(x=f2_pre, xend=f2_post, y=f1_pre, yend=f1_post),
-    arrow=arrow(type="closed", length=unit(0.075, "in")),
-    inherit.aes=FALSE,
-    colour=colors$arrow)
+p <- p + scale_fill_manual(
+  values=c(colors$pre, colors$post, colors$sse),
+  name="Test")
+p <- p + scale_color_manual(
+  values=c(colors$pre, colors$post, colors$sse),
+  name="Test")
 p <- p + geom_text(
     data=df,
     aes(x=lab.x, y=lab.y, label=ipa),
     colour=colors$ipa,
     family="DejaVuSans",
     size=fontSize*0.4)
-p <- p +  ylab("Normalised F1")
-p <- p +  xlab("Normalised F2")
+p <- p +  ylab("F1 (Lobanov)")
+p <- p +  xlab("F2 (Lobanov)")
 p <- p + facet_grid(.~Group)
 
 options(repr.plot.width=width, repr.plot.height=height)
