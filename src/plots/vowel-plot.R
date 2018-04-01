@@ -83,7 +83,7 @@ colors <- {}
 colors$pre <-  "#F8BBD0"
 colors$post <- "#E91E63"
 colors$arrow <- "#444444"
-colors$ipa <- "#0288D1"
+colors$ipa <- "#176FC1" # "#0288D1"
 
 dpi = 1200
 fontSize <- dpi * 80 / 600
