@@ -115,7 +115,7 @@ colors$sse <- "#cccccc"
 colors$panel.background <- "#eeeeee"
 colors$panel.grid <- "#ffffff"
 
-dpi = 300
+dpi = 1200
 fontSize <- dpi * 80 / 600
 rad <- function(a) a / 180 * pi
 width = 7
