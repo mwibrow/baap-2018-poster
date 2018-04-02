@@ -110,21 +110,30 @@ df$ipa <- ipa[as.character(df$vowel)]
 
 lab.df <- with(df, data.frame(label=ipa, group, f1=f1_pre, f2=f2_pre))
 lab.df$angle <- 90
-lab.df$r <- 0.1875
+lab.df$r <- 0.19
 
-angles <- {}
-angles$"ɒ" <- 180
-angles$"i:" <- 0
-angles$"ʊ" <- 180
-angles$"æ" <- 180
-angles$"ɜ:" <- 180
-angles$"ʌ" <- 180
-for (label in names(angles)) {
-  lab.df$angle[which(lab.df$label == as.character(label) & lab.df$group == "LV")] <- as.numeric(angles[label])
+angles <- new.env(hash=TRUE)
+angles$LV <- new.env(hash=TRUE)
+angles$HV <- new.env(hash=TRUE)
+
+with(angles, {
+  LV$"ɒ" <- 180
+  LV$"i:" <- 0
+  LV$"ʊ" <- 180
+  LV$"ɜ:" <- 180
+  LV$"ʌ" <- 180
+  LV$"æ" <- 180
+  HV$"æ" <- 180
+  HV$"ɪ" <- 270
+  HV$"ɜ:" <- 180
+  HV$"ɑ:" <- 0
+  HV$"ʌ" <- 45
+})
+for (group in names(angles)) {
+  for (label in names(angles[[group]])) {
+    lab.df$angle[which(lab.df$label == as.character(label) & lab.df$group == as.character(group))] <- as.numeric(angles[[group]][[label]])
+  }
 }
-# lab.df$angle[which(lab.df$label == "i:" & lab.df$group == "LV")] <- 0
-# lab.df$angle[which(lab.df$label == "ɪ" & lab.df$group == "LV")] <- 180
-# lab.df$angle[which(lab.df$label == "ʊ" & lab.df$group == "LV")] <- 0
 
 lab.df$x <- with(lab.df, f2 - cos(rad(angle)) * r)
 lab.df$y <- with(lab.df, f1 - sin(rad(angle)) * r)
