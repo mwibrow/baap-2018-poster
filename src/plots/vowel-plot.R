@@ -6,6 +6,8 @@ for (package in list.of.packages) {
 	library(package, character.only=TRUE)
 }
 
+rad <- function(a) a / 180 * pi
+
 lobanov <- function(df, f1="f1", f2="f2", vowel="vowel", group=c(), reduce=TRUE) {
   ddply(df, group, function(df.grp) {
 	  f1.grp <- df.grp[,f1]
@@ -90,14 +92,14 @@ df$angle <- apply(df, 1, FUN=function(d) {
 	atan2(as.numeric(d["f1_post"]) - as.numeric(d["f1_pre"]),
 		  as.numeric(d["f2_post"]) - as.numeric(d["f2_pre"])) / pi * 180 })
 df$angle <- floor(df$angle / 90) * 90 + 90
-df$angle[df$vowel == "hud" & df$group == "LV"] <- 180
-df$angle[df$vowel == "hard" & df$group == "LV"] <- 45
-df$angle[df$vowel == "hoard" & df$group == "LV"] <- 135
+# df$angle[df$vowel == "hud" & df$group == "LV"] <- 180
+# df$angle[df$vowel == "hard" & df$group == "LV"] <- 45
+# df$angle[df$vowel == "hoard" & df$group == "LV"] <- 135
 
 df$angle[df$vowel == "heed" & df$group == "HV"] <- 45
-df$angle[df$vowel == "hud" & df$group == "HV"] <- 45
-df$angle[df$vowel == "hard" & df$group == "HV"] <- 0
-df$angle[df$vowel == "heard" & df$group == "HV"] <- 180
+# df$angle[df$vowel == "hud" & df$group == "HV"] <- 45
+# df$angle[df$vowel == "hard" & df$group == "HV"] <- 0
+# df$angle[df$vowel == "heard" & df$group == "HV"] <- 180
 
 sse.lob.df$angle[sse.lob.df$group == "HV"] <- 90
 s <- 0.1875
@@ -105,6 +107,27 @@ df$lab.x <- df$f2_pre - cos(df$angle / 180 * pi) * s
 df$lab.y <- df$f1_pre - sin(df$angle / 180 * pi) * s
 df$ipa <- ipa[as.character(df$vowel)]
 
+
+lab.df <- with(df, data.frame(label=ipa, group, f1=f1_pre, f2=f2_pre))
+lab.df$angle <- 90
+lab.df$r <- 0.1875
+
+angles <- {}
+angles$"ɒ" <- 180
+angles$"i:" <- 0
+angles$"ʊ" <- 180
+angles$"æ" <- 180
+angles$"ɜ:" <- 180
+angles$"ʌ" <- 180
+for (label in names(angles)) {
+  lab.df$angle[which(lab.df$label == as.character(label) & lab.df$group == "LV")] <- as.numeric(angles[label])
+}
+# lab.df$angle[which(lab.df$label == "i:" & lab.df$group == "LV")] <- 0
+# lab.df$angle[which(lab.df$label == "ɪ" & lab.df$group == "LV")] <- 180
+# lab.df$angle[which(lab.df$label == "ʊ" & lab.df$group == "LV")] <- 0
+
+lab.df$x <- with(lab.df, f2 - cos(rad(angle)) * r)
+lab.df$y <- with(lab.df, f1 - sin(rad(angle)) * r)
 # Define colors
 colors <- {}
 colors$pre <-  "#F8BBD0"
@@ -115,9 +138,9 @@ colors$sse <- "#cccccc"
 colors$panel.background <- "#eeeeee"
 colors$panel.grid <- "#ffffff"
 
-dpi = 1200
+dpi = 300
 fontSize <- dpi * 80 / 600
-rad <- function(a) a / 180 * pi
+
 width = 7
 height = 4.5
 
@@ -153,14 +176,16 @@ p <- p + geom_point(
 	data=sse.lob.df,
 	aes(x=f2, y=f1, fill="SSBE"),
   color=colors$sse,
-	size=3)
+	size=6.25)
 # ...and SSBE labels
 p <- p + geom_text(
 	data=sse.lob.df,
-	aes(x=f2 - cos(rad(angle))*dist, y=f1 - sin(rad(angle))*dist, label=ipa),
-	color=colors$sse,
+	aes(x=f2, y=f1, label=ipa),
+  color="white",
 	family="DejaVuSans",
-	size=fontSize*0.4)
+  vjust=0.4,
+	size=fontSize*0.333)
+# Add an extra legend entry
 p <- p + scale_fill_manual("", breaks = "SSBE", values=colors$sse)
 
 # Draw lines between pre and post
@@ -182,10 +207,11 @@ p <- p + scale_color_manual(
 
 # Add labels to pre points
 p <- p + geom_text(
-	data=df,
-	aes(x=lab.x, y=lab.y, label=ipa),
+	data=lab.df,
+	aes(x, y, label=label),
 	colour=colors$ipa,
 	family="DejaVuSans",
+  vjust=0.4,
 	size=fontSize*0.4)
 
 p <- p +  ylab("F1 (Lobanov)")
