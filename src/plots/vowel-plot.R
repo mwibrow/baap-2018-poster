@@ -147,10 +147,12 @@ p <- p + scale_x_reverse(
 	labels=seq(-2,2,1))
 # Add limits here to prevent filtering of data
 p <- p + coord_cartesian(xlim=c(2,-2), ylim=c(2, -2))
+
 # Add SSBE points...
 p <- p + geom_point(
 	data=sse.lob.df,
-	aes(x=f2, y=f1, color='SSBE'),
+	aes(x=f2, y=f1, fill="SSBE"),
+  color=colors$sse,
 	size=3)
 # ...and SSBE labels
 p <- p + geom_text(
@@ -159,6 +161,8 @@ p <- p + geom_text(
 	color=colors$sse,
 	family="DejaVuSans",
 	size=fontSize*0.4)
+p <- p + scale_fill_manual("", breaks = "SSBE", values=colors$sse)
+
 # Draw lines between pre and post
 p <- p + geom_segment(
 	data=df,
@@ -166,23 +170,24 @@ p <- p + geom_segment(
 	# arrow=arrow(type="closed", length=unit(0.075, "in")),
 	inherit.aes=FALSE,
 	colour=colors$arrow)
+
 # Draw pre and post points
 p <- p + geom_point(
 	data=lob.mn.df,
 	aes(x=f2, y=f1, color=test),
 	size=3)
-p <- p + scale_fill_manual(
-  values=c(colors$pre, colors$post, colors$sse),
-  name="test")
 p <- p + scale_color_manual(
-  values=c(colors$pre, colors$post, colors$sse),
-  name="test")
+  values=c(colors$pre, colors$post),
+  name="Test")
+
+# Add labels to pre points
 p <- p + geom_text(
 	data=df,
 	aes(x=lab.x, y=lab.y, label=ipa),
 	colour=colors$ipa,
 	family="DejaVuSans",
 	size=fontSize*0.4)
+
 p <- p +  ylab("F1 (Lobanov)")
 p <- p +  xlab("F2 (Lobanov)")
 p <- p + facet_grid(.~group)
