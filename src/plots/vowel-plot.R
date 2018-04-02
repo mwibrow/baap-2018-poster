@@ -6,7 +6,7 @@ for (package in list.of.packages) {
 	library(package, character.only=TRUE)
 }
 
-lobanov <- function(df, f1='f1', f2='f2', vowel='vowel', group=c(), reduce=TRUE) {
+lobanov <- function(df, f1="f1", f2="f2", vowel="vowel", group=c(), reduce=TRUE) {
   ddply(df, group, function(df.grp) {
 	  f1.grp <- df.grp[,f1]
 	  f2.grp <- df.grp[,f2]
@@ -49,8 +49,8 @@ sse.lob.df <- lobanov(sse.df)
 sse.lob.df$ipa <- ipa[as.character(sse.lob.df$vowel)]
 
 sse.lob.df <- rbind(
-    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group='LV')),
-    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group='HV')))
+    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group="LV")),
+    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group="HV")))
 
 sse.lob.df$angle <- 0
 sse.lob.df$dist <- 0.25
