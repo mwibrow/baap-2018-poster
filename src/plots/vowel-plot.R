@@ -116,12 +116,14 @@ angles <- new.env(hash=TRUE)
 angles$LV <- new.env(hash=TRUE)
 angles$HV <- new.env(hash=TRUE)
 
+pos.default = list(angle=0, r=0.19)
 with(angles, {
   LV <- new.env(hash=TRUE)
   with(LV, {
     "ɒ" <- 180
     "i:" <- 0
     "ʊ" <- 180
+    "ɪ" <- 180
     "ɜ:" <- 180
     "ʌ" <- 180
     "æ" <- 180
@@ -132,14 +134,23 @@ with(angles, {
   HV$"ɑ:" <- 0
   HV$"ʌ" <- 45
 })
-for (group in names(angles)) {
-  for (label in names(angles[[group]])) {
-    lab.df$angle[which(lab.df$label == as.character(label) & lab.df$group == as.character(group))] <- as.numeric(angles[[group]][[label]])
-  }
-}
 
-lab.df$x <- with(lab.df, f2 - cos(rad(angle)) * r)
-lab.df$y <- with(lab.df, f1 - sin(rad(angle)) * r)
+lab.df <- ddply(lab.df, c('group', 'label'), function(d) {
+  group <- as.character(d$group)
+  label <- as.character(d$label)
+  pos <- angles[[group]][[label]]
+  if (is.null(pos)) {
+    pos <- pos.default
+  } else {
+    if (is.numeric(pos)) {
+      pos <- list(angle=pos, r=pos.default$r)
+    }
+  }
+  data.frame(
+      x=d$f2 - cos(rad(pos$angle)) * pos$r,
+      y=d$f1 - sin(rad(pos$angle)) * pos$r)
+})
+
 # Define colors
 colors <- {}
 colors <- new.env()

@@ -1,3 +1,8 @@
+# OS specifc files
+.DS_Store
+Icon?
+Thumbs.db
+
 # Build files
 build/
 color_profiles/
