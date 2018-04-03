@@ -177,6 +177,7 @@ with(colors, {
   arrow <- "#444444"
   ipa <- "#176FC1" # "#0288D1"
   sse <- "#cccccc"
+  sse.label <- "#ffffff"
   panel.background <- "#eeeeee"
   panel.grid <- "#ffffff"
 })
@@ -230,7 +231,7 @@ p <- p + geom_point(
 p <- p + geom_text(
 	data=sse.lob.df,
 	aes(x=f2, y=f1, label=ipa),
-  color="white",
+  color=colors$sse.label,
 	family="DejaVuSans",
   vjust=0.4,
 	size=fontSize*0.333)
