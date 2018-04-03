@@ -117,12 +117,15 @@ angles$LV <- new.env(hash=TRUE)
 angles$HV <- new.env(hash=TRUE)
 
 with(angles, {
-  LV$"ɒ" <- 180
-  LV$"i:" <- 0
-  LV$"ʊ" <- 180
-  LV$"ɜ:" <- 180
-  LV$"ʌ" <- 180
-  LV$"æ" <- 180
+  LV <- new.env(hash=TRUE)
+  with(LV, {
+    "ɒ" <- 180
+    "i:" <- 0
+    "ʊ" <- 180
+    "ɜ:" <- 180
+    "ʌ" <- 180
+    "æ" <- 180
+  })
   HV$"æ" <- 180
   HV$"ɪ" <- 270
   HV$"ɜ:" <- 180
@@ -139,17 +142,26 @@ lab.df$x <- with(lab.df, f2 - cos(rad(angle)) * r)
 lab.df$y <- with(lab.df, f1 - sin(rad(angle)) * r)
 # Define colors
 colors <- {}
-colors$pre <-  "#F8BBD0"
-colors$post <- "#E91E63"
-colors$arrow <- "#444444"
-colors$ipa <- "#176FC1" # "#0288D1"
-colors$sse <- "#cccccc"
-colors$panel.background <- "#eeeeee"
-colors$panel.grid <- "#ffffff"
+colors <- new.env()
+with(colors, {
+  pre <-  "#F8BBD0"
+  post <- "#E91E63"
+  arrow <- "#444444"
+  ipa <- "#176FC1" # "#0288D1"
+  sse <- "#cccccc"
+  panel.background <- "#eeeeee"
+  panel.grid <- "#ffffff"
+})
 
-dpi = 300
-fontSize <- dpi * 80 / 600
+dpi = 1200
 
+if (Sys.info()['sysname'] == "Darwin") {
+  fontSize <- 12
+} else {
+  fontSize <- dpi * 80 / 600
+}
+
+showtext_opts(dpi=dpi)
 width = 7
 height = 4.5
 

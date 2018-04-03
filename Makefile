@@ -13,7 +13,7 @@ plots=$(input_dir)/plots
 TEXINPUTS:=$(input_dir)//:$(TEXINPUTS)
 BIBINPUTS:=$(input_dir)//:$(BIBINPUTS)
 
-final: plots poster
+all: plots poster
 
 poster: paths latex biber rerun rererun
 	cp $(output_dir)/$(jobname).pdf ./

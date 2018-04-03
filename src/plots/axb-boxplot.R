@@ -35,7 +35,13 @@ names(bx.df)[names(bx.df) == "group"] <- "Group"
 width <- 7
 height <- 5
 dpi <- 1200
-fontSize <- dpi * 80 / 600
+
+if (Sys.info()['sysname'] == "Darwin") {
+  fontSize <- 12
+} else {
+  fontSize <- dpi * 80 / 600
+}
+
 POST <- "#F8BBD0"
 PRE <- "#E91E63"
 MD <- "#FCE4EC"
