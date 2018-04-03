@@ -112,13 +112,40 @@ lab.df <- with(df, data.frame(label=ipa, group, f1=f1_pre, f2=f2_pre))
 lab.df$angle <- 90
 lab.df$r <- 0.19
 
-angles <- new.env(hash=TRUE)
-angles$LV <- new.env(hash=TRUE)
-angles$HV <- new.env(hash=TRUE)
 
-pos.default = list(angle=0, r=0.19)
-with(angles, {
+
+
+label.transform <- function(
+  df, x, y,
+  label='label',
+  transforms=NULL,
+  groups=c(),
+  default=list(angle=0, r=0.25)) {
+  return(ddply(lab.df, c(groups, label), function(d) {
+    group <- as.character(d$group)
+    label <- as.character(d$label)
+    if (is.null(transforms)) {
+      pos = NULL
+    } else {
+      pos <- transforms[[group]][[label]]
+    }
+    if (is.null(pos)) {
+      pos <- default
+    } else {
+      if (is.numeric(pos)) {
+        pos <- list(angle=pos, r=default$r)
+      }
+    }
+    data.frame(
+        x=d[,x] - cos(rad(pos$angle)) * pos$r,
+        y=d[,y] - sin(rad(pos$angle)) * pos$r)
+  }))
+}
+
+transforms <- new.env(hash=TRUE)
+with(transforms, {
   LV <- new.env(hash=TRUE)
+  HV <- new.env(hash=TRUE)
   with(LV, {
     "ɒ" <- 180
     "i:" <- 0
@@ -135,21 +162,11 @@ with(angles, {
   HV$"ʌ" <- 45
 })
 
-lab.df <- ddply(lab.df, c('group', 'label'), function(d) {
-  group <- as.character(d$group)
-  label <- as.character(d$label)
-  pos <- angles[[group]][[label]]
-  if (is.null(pos)) {
-    pos <- pos.default
-  } else {
-    if (is.numeric(pos)) {
-      pos <- list(angle=pos, r=pos.default$r)
-    }
-  }
-  data.frame(
-      x=d$f2 - cos(rad(pos$angle)) * pos$r,
-      y=d$f1 - sin(rad(pos$angle)) * pos$r)
-})
+lab.df <- label.transform(
+  lab.df, x='f2', y='f1',
+  groups=c('group'),
+  transforms=transforms,
+  default=list(angle=0, r=0.2))
 
 # Define colors
 colors <- {}
