@@ -73,7 +73,7 @@ write.csv(lob.df, "vowels-lob.csv", row.names=FALSE, quote=FALSE)
 
 
 lob.mn.df <- ddply(lob.df, c("group", "test", "vowel"), function(subset) {
-	data.frame(f1=mean(subset$f1), f2=mean(subset$f2))
+	data.frame(f1=median(subset$f1), f2=median(subset$f2))
 })
 
 # Do plot
@@ -142,11 +142,22 @@ label.transform <- function(
   }))
 }
 
-transforms <- new.env(hash=TRUE)
-with(transforms, {
-  LV <- new.env(hash=TRUE)
-  HV <- new.env(hash=TRUE)
-  with(LV, {
+dict <- function(content=NULL) {
+  dct <- new.env(hash=TRUE)
+  if (!is.null(content)) {
+    expressions <- parse(text = deparse(substitute(content)))[[1]]
+    for (i in seq(2, length(expressions))) {
+      expression <- expressions[[i]]
+      name <- as.character(expression[[2]])
+      value <- expression[[3]]
+      dct[[name]] <- eval(value)
+    }
+  }
+  return (dct)
+}
+
+transforms <- dict({
+  LV <- dict({
     "ɒ" <- 180
     "i:" <- 0
     "ʊ" <- 180
@@ -155,11 +166,13 @@ with(transforms, {
     "ʌ" <- 180
     "æ" <- 180
   })
-  HV$"æ" <- 180
-  HV$"ɪ" <- 270
-  HV$"ɜ:" <- 180
-  HV$"ɑ:" <- 0
-  HV$"ʌ" <- 45
+  HV <- dict({
+    "æ" <- 180
+    "ɪ" <- 270
+    "ɜ:" <- 180
+    "ɑ:" <- 0
+    "ʌ" <- 45
+  })
 })
 
 lab.df <- label.transform(
