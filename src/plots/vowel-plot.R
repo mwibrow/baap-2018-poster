@@ -43,10 +43,10 @@ invisible(apply(matches, 1, FUN=function(row){
 
 sse.df <- read.csv('ssbe.csv')
 sse.df <- subset(sse.df, vowel %in% monophthongs)
-# sse.df <- data.frame(
-#   vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
-#   f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
-#   f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
+sse.df <- data.frame(
+  vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
+  f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
+  f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
 
 sse.lob.df <- lobanov(sse.df)
 sse.lob.df$ipa <- ipa[as.character(sse.lob.df$vowel)]
@@ -58,13 +58,14 @@ sse.lob.df <- rbind(
 sse.lob.df$angle <- 0
 sse.lob.df$dist <- 0.25
 
-if (!file.exists('lob.csv')) {
+lob.file <- 'lobanov.csv'
+if (!file.exists(lob.file)) {
   cat('Calculating Lobanov formats.')
   vwl.df <- rbind(
-    read.csv("vowels-pre-LV.csv"),
-    read.csv("vowels-post-LV.csv"),
-    read.csv("vowels-pre-HV.csv"),
-    read.csv("vowels-post-HV.csv"))
+    read.csv("pre-LV.csv"),
+    read.csv("post-LV.csv"),
+    read.csv("pre-HV.csv"),
+    read.csv("post-HV.csv"))
   vwl.df <- vwl.df[vwl.df$vowel %in% monophthongs,]
   vwl.df$speaker <- sapply(vwl.df$participant, FUN=function(x) sub("(C[0-9]+).*?([LH]V)", "\\1\\2", x))
 
@@ -214,7 +215,7 @@ dpi = 1200
 if (Sys.info()['sysname'] == "Darwin") {
   fontSize <- 12
 } else {
-  fontSize <- dpi * 80 / 600
+  fontSize <- 12
 }
 
 showtext_opts(dpi=dpi)

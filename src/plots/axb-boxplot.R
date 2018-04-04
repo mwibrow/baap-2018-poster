@@ -12,7 +12,12 @@ font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
 font_add("Cabin-Italic", "../fonts/Cabin/Cabin-Italic.ttf")
 showtext_auto()
 
-axb.df <- read.csv(file="AXB-data.csv", header=TRUE, sep=",")
+axb.file <- "AXB-data.csv"
+axb.df <- read.csv(file=axb.file, header=TRUE, sep=",")
+
+axb.df$participant <- apply(axb.df, 1, function(x){
+    paste(c(x['participant'], x['group']), collapse='-')
+})
 axb.df$Pair <- apply(axb.df, 1, function(row) {
     stimuli <- row[c("stim1", "stim2", "stim3")]
     pair <- sort(unique(stimuli))
