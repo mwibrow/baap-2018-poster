@@ -41,11 +41,12 @@ invisible(apply(matches, 1, FUN=function(row){
 }))
 
 
-
-sse.df <- data.frame(
-  vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
-  f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
-  f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
+sse.df <- read.csv('ssbe.csv')
+sse.df <- subset(sse.df, vowel %in% monophthongs)
+# sse.df <- data.frame(
+#   vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
+#   f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
+#   f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
 
 sse.lob.df <- lobanov(sse.df)
 sse.lob.df$ipa <- ipa[as.character(sse.lob.df$vowel)]
@@ -78,10 +79,10 @@ if (!file.exists('lob.csv')) {
   lob.df$test <- relevel(lob.df$test, ref="pre")
 }
 
-
 lob.mn.df <- ddply(lob.df, c("group", "test", "vowel"), function(subset) {
   data.frame(f1=mean(subset$f1), f2=mean(subset$f2))
 })
+
 
 # Do plot
 
