@@ -13,6 +13,7 @@ color_profiles/
 
 # Data for now
 /data/
+/src/data/
 
 src/plots/*.png
 poster.pdf

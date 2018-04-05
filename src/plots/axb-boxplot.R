@@ -12,11 +12,11 @@ font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
 font_add("Cabin-Italic", "../fonts/Cabin/Cabin-Italic.ttf")
 showtext_auto()
 
-axb.file <- "AXB-data.csv"
+axb.file <- file.path("data", "AXB-data.csv")
 axb.df <- read.csv(file=axb.file, header=TRUE, sep=",")
 
 axb.df$participant <- apply(axb.df, 1, function(x){
-    paste(c(x['participant'], x['group']), collapse='-')
+    paste(c(x["participant"], x["group"]), collapse="-")
 })
 axb.df$Pair <- apply(axb.df, 1, function(row) {
     stimuli <- row[c("stim1", "stim2", "stim3")]
@@ -41,7 +41,7 @@ width <- 7
 height <- 5
 dpi <- 1200
 
-if (Sys.info()['sysname'] == "Darwin") {
+if (Sys.info()["sysname"] == "Darwin") {
   fontSize <- 12
 } else {
   fontSize <- dpi * 80 / 600
@@ -87,6 +87,6 @@ dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
 dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
 p <- p + geom_segment(
   data=dat,
-  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend='square', inherit.aes=FALSE, colour=MD)
+  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour=MD)
 #
 ggsave("axb-boxplot.png", width=width, height=height, units="in", dpi=dpi)
