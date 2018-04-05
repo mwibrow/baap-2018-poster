@@ -61,19 +61,21 @@ ssbe.lob.df$angle <- 0
 ssbe.lob.df$dist <- 0.25
 
 lob.file <- file.path(dataDir, "lobanov.csv")
-if (!file.exists(lob.file)) {
+if (file.exists(lob.file)) {
   cat("Calculating Lobanov formats.\n")
   vwl.df <- rbind(
     read.csv(file.path(dataDir, "pre-LV.csv")),
     read.csv(file.path(dataDir, "post-LV.csv")),
     read.csv(file.path(dataDir, "pre-HV.csv")),
     read.csv(file.path(dataDir, "post-HV.csv")))
-  vwl.df <- vwl.df[vwl.df$vowel %in% monophthongs,]
+  cat(sprintf('Processing %d rows\n', nrow(vwl.df)))
+  # vwl.df <- vwl.df[vwl.df$vowel %in% monophthongs,]
   vwl.df$speaker <- sapply(vwl.df$participant, FUN=function(x) sub("(C[0-9]+).*?([LH]V)", "\\1\\2", x))
 
 
 
   lob.df <- lobanov(vwl.df, f1="f1", f2="f2", group=c("group", "test", "speaker"))
+  lob.df <- subset(lob.df, vowel %in% monophthongs)
   write.csv(lob.df, file.path(dataDir, "lobanov-calc.csv"), row.names=FALSE, quote=FALSE)
 } else {
   cat("Reading precalculated Lobanov formats\n")
@@ -153,7 +155,7 @@ transforms <- dict({
     "ʊ" <- 180
     "ɪ" <- 180
     "ɜ:" <- 180
-    "ʌ" <- 180
+    "ʌ" <- 0
     "æ" <- 180
     "e" <- 180
     "ɔ:" <- 90
@@ -176,6 +178,7 @@ transforms.ssbe <- dict({
   LV <- dict({
     "ʌ" <- 270
     "e" <- 270
+    "ɪ" <- 270
   })
   HV <- dict({
     "æ" <- 180
