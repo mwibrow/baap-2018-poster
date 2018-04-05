@@ -12,7 +12,7 @@ color_profiles/
 *.ipynb
 
 # Data for now
-data/
+/data/
 
 src/plots/*.png
 poster.pdf

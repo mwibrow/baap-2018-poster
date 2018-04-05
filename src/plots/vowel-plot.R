@@ -6,6 +6,8 @@ for (package in list.of.packages) {
   library(package, character.only=TRUE)
 }
 
+dataDir <- "data"
+
 rad <- function(a) a / 180 * pi
 
 lobanov <- function(df, f1="f1", f2="f2", vowel="vowel", group=c(), reduce=TRUE) {
@@ -41,41 +43,41 @@ invisible(apply(matches, 1, FUN=function(row){
 }))
 
 
-sse.df <- read.csv('ssbe.csv')
-sse.df <- subset(sse.df, vowel %in% monophthongs)
-sse.df <- data.frame(
+ssbe.df <- read.csv(file.path(dataDir, "ssbe.csv"))
+ssbe.df <- subset(ssbe.df, vowel %in% monophthongs)
+ssbe.df <- data.frame(
   vowel=c("heed", "hid", "head", "had", "hard", "hod", "hoard", "hood", "whod", "hud", "heard"),
   f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
   f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
 
-sse.lob.df <- lobanov(sse.df)
-sse.lob.df$ipa <- ipa[as.character(sse.lob.df$vowel)]
+ssbe.lob.df <- lobanov(ssbe.df)
+ssbe.lob.df$label <- ipa[as.character(ssbe.lob.df$vowel)]
 
-sse.lob.df <- rbind(
-    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group="LV")),
-    ddply(sse.lob.df, names(sse.lob.df), function(x) data.frame(group="HV")))
+ssbe.lob.df <- rbind(
+    ddply(ssbe.lob.df, names(ssbe.lob.df), function(x) data.frame(group="LV")),
+    ddply(ssbe.lob.df, names(ssbe.lob.df), function(x) data.frame(group="HV")))
 
-sse.lob.df$angle <- 0
-sse.lob.df$dist <- 0.25
+ssbe.lob.df$angle <- 0
+ssbe.lob.df$dist <- 0.25
 
-lob.file <- 'lobanov.csv'
+lob.file <- file.path(dataDir, "lobanov.csv")
 if (!file.exists(lob.file)) {
-  cat('Calculating Lobanov formats.')
+  cat("Calculating Lobanov formats.\n")
   vwl.df <- rbind(
-    read.csv("pre-LV.csv"),
-    read.csv("post-LV.csv"),
-    read.csv("pre-HV.csv"),
-    read.csv("post-HV.csv"))
+    read.csv(file.path(dataDir, "pre-LV.csv")),
+    read.csv(file.path(dataDir, "post-LV.csv")),
+    read.csv(file.path(dataDir, "pre-HV.csv")),
+    read.csv(file.path(dataDir, "post-HV.csv")))
   vwl.df <- vwl.df[vwl.df$vowel %in% monophthongs,]
   vwl.df$speaker <- sapply(vwl.df$participant, FUN=function(x) sub("(C[0-9]+).*?([LH]V)", "\\1\\2", x))
 
 
 
-  lob.df <- lobanov(vwl.df, f1="f1.50", f2="f2.50", group=c("group", "test", "speaker"))
-  write.csv(lob.df, "vowels-lob.csv", row.names=FALSE, quote=FALSE)
+  lob.df <- lobanov(vwl.df, f1="f1", f2="f2", group=c("group", "test", "speaker"))
+  write.csv(lob.df, file.path(dataDir, "lobanov-calc.csv"), row.names=FALSE, quote=FALSE)
 } else {
-  cat('Reading precalculated Lobanov formats\n')
-  lob.df <- read.csv('lob.csv')
+  cat("Reading precalculated Lobanov formats\n")
+  lob.df <- read.csv(lob.file)
   lob.df$test <- as.factor(lob.df$test)
   lob.df$test <- relevel(lob.df$test, ref="pre")
 }
@@ -95,42 +97,21 @@ showtext_auto()
 
 df.melt <- melt(lob.mn.df,  id.var = c("vowel", "group", "test"))
 df <- dcast(df.melt, group+vowel~variable+test)
-
-# Roughtly Position labels
-df$angle <- apply(df, 1, FUN=function(d) {
-  atan2(as.numeric(d["f1_post"]) - as.numeric(d["f1_pre"]),
-      as.numeric(d["f2_post"]) - as.numeric(d["f2_pre"])) / pi * 180 })
-df$angle <- floor(df$angle / 90) * 90 + 90
-# df$angle[df$vowel == "hud" & df$group == "LV"] <- 180
-# df$angle[df$vowel == "hard" & df$group == "LV"] <- 45
-# df$angle[df$vowel == "hoard" & df$group == "LV"] <- 135
-
-df$angle[df$vowel == "heed" & df$group == "HV"] <- 45
-# df$angle[df$vowel == "hud" & df$group == "HV"] <- 45
-# df$angle[df$vowel == "hard" & df$group == "HV"] <- 0
-# df$angle[df$vowel == "heard" & df$group == "HV"] <- 180
-
-sse.lob.df$angle[sse.lob.df$group == "HV"] <- 90
-s <- 0.1875
-df$lab.x <- df$f2_pre - cos(df$angle / 180 * pi) * s
-df$lab.y <- df$f1_pre - sin(df$angle / 180 * pi) * s
 df$ipa <- ipa[as.character(df$vowel)]
 
 
 lab.df <- with(df, data.frame(label=ipa, group, f1=f1_pre, f2=f2_pre))
-lab.df$angle <- 90
-lab.df$r <- 0.19
 
 
 
 
 label.transform <- function(
   df, x, y,
-  label='label',
+  label="label",
   transforms=NULL,
   groups=c(),
   default=list(angle=0, r=0.25)) {
-  return(ddply(lab.df, c(groups, label), function(d) {
+  return(ddply(df, c(groups, label), function(d) {
     group <- as.character(d$group)
     label <- as.character(d$label)
     if (is.null(transforms)) {
@@ -176,6 +157,7 @@ transforms <- dict({
     "æ" <- 180
     "e" <- 180
     "ɔ:" <- 90
+    "ɑ:" <- 270
   })
   HV <- dict({
     "i:" <- 90
@@ -190,11 +172,43 @@ transforms <- dict({
   })
 })
 
+transforms.ssbe <- dict({
+  LV <- dict({
+    "ɒ" <- 180
+    "i:" <- 0
+    "ʊ" <- 180
+    "ɪ" <- 270
+    "ɜ:" <- 180
+    "ʌ" <- 0
+    "æ" <- 180
+    "e" <- 180
+    "ɔ:" <- 90
+  })
+  HV <- dict({
+    "i:" <- 90
+    "æ" <- 180
+    "ɪ" <- 180
+    "ɜ:" <- 180
+    "e" <- 180
+    "ɑ:" <- 0
+    "ʌ" <- 270
+    "u:" <- 90
+    "ɒ" <- 270
+  })
+})
+
 lab.df <- label.transform(
-  lab.df, x='f2', y='f1',
-  groups=c('group'),
+  lab.df, x="f2", y="f1",
+  groups=c("group"),
   transforms=transforms,
   default=list(angle=0, r=0.2))
+
+ssbe.lab.df <- ssbe.lob.df[c("label", "group", "f1", "f2")]
+ssbe.lab.df <- label.transform(
+  ssbe.lab.df, x="f2", y="f1",
+  groups=c("group"),
+  transforms=transforms.ssbe,
+  default=list(angle=90, r=0.19))
 
 # Define colors
 colors <- {}
@@ -204,15 +218,15 @@ with(colors, {
   post <- "#E91E63"
   arrow <- "#444444"
   ipa <- "#176FC1" # "#0288D1"
-  sse <- "#cccccc"
-  sse.label <- "#ffffff"
+  ssbe <- "#cccccc"
+  ssbe.label <- "#cccccc"
   panel.background <- "#eeeeee"
   panel.grid <- "#ffffff"
 })
 
 dpi = 1200
 
-if (Sys.info()['sysname'] == "Darwin") {
+if (Sys.info()["sysname"] == "Darwin") {
   fontSize <- 12
 } else {
   fontSize <- 12
@@ -252,20 +266,20 @@ p <- p + coord_cartesian(xlim=c(2,-2), ylim=c(2, -2))
 
 # Add SSBE points...
 p <- p + geom_point(
-  data=sse.lob.df,
+  data=ssbe.lob.df,
   aes(x=f2, y=f1, fill="SSBE"),
-  color=colors$sse,
-  size=6.25)
+  color=colors$ssbe,
+  size=3)
 # ...and SSBE labels
 p <- p + geom_text(
-  data=sse.lob.df,
-  aes(x=f2, y=f1, label=ipa),
-  color=colors$sse.label,
+  data=ssbe.lab.df,
+  aes(x, y, label=label),
+  color=colors$ssbe.label,
   family="DejaVuSans",
   vjust=0.4,
   size=fontSize*0.333)
 # Add an extra legend entry
-p <- p + scale_fill_manual("", breaks = "SSBE", values=colors$sse)
+p <- p + scale_fill_manual("", breaks = "SSBE", values=colors$ssbe)
 
 # Draw lines between pre and post
 p <- p + geom_segment(
@@ -298,6 +312,6 @@ p <- p +  xlab("F2 (Lobanov)")
 p <- p + facet_grid(.~group)
 
 options(repr.plot.width=width, repr.plot.height=height)
-ggsave("vowels-plot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave("vowel-plot.png", width=width, height=height, units="in", dpi=dpi)
 
 
