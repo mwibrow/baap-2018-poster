@@ -1,10 +1,4 @@
-list.of.packages <- c("ggplot2", "showtext", "reshape2", "plyr", "stringr")
-
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-for (package in list.of.packages) {
-  library(package, character.only=TRUE)
-}
+source(file.path("R", "settings.R"))
 
 dataDir <- "data"
 
@@ -32,16 +26,6 @@ lobanov <- function(df, f1="f1", f2="f2", vowel="vowel", group=c(), reduce=TRUE)
   })
 }
 
-monophthongs <- c()
-ipa <- {}
-
-map <- "heed /i:/ hid /ɪ/ head /e/ heard /ɜ:/ had /æ/ hud /ʌ/ hard /ɑ:/ hod /ɒ/ hoard /ɔ:/ whod /u:/ hood /ʊ/"
-matches <- as.data.frame(str_match_all(map, "([a-z]+)\\s+/([^/]{1,2})/")[[1]])
-invisible(apply(matches, 1, FUN=function(row){
-  ipa[row["V2"]] <<- row["V3"]
-  monophthongs <<- c(monophthongs, row["V2"])
-}))
-
 
 ssbe.df <- read.csv(file.path(dataDir, "ssbe.csv"))
 ssbe.df <- subset(ssbe.df, vowel %in% monophthongs)
@@ -56,7 +40,7 @@ ssbe.lob.df <- lobanov(ssbe.df, group=c("speaker"))
 ssbe.lob.df <- ddply(ssbe.lob.df, c("vowel"), function(subset) {
   data.frame(f1=mean(subset$f1), f2=mean(subset$f2))
 })
-ssbe.lob.df$label <- ipa[as.character(ssbe.lob.df$vowel)]
+ssbe.lob.df$label <- hvd[as.character(ssbe.lob.df$vowel)]
 
 ssbe.lob.df <- rbind(
     ddply(ssbe.lob.df, names(ssbe.lob.df), function(x) data.frame(group="LV")),
@@ -104,10 +88,10 @@ showtext_auto()
 
 df.melt <- melt(lob.mn.df,  id.var = c("vowel", "group", "test"))
 df <- dcast(df.melt, group+vowel~variable+test)
-df$ipa <- ipa[as.character(df$vowel)]
+df$hvd <- hvd[as.character(df$vowel)]
 
 
-lab.df <- with(df, data.frame(label=ipa, group, f1=f1_pre, f2=f2_pre))
+lab.df <- with(df, data.frame(label=hvd, group, f1=f1_pre, f2=f2_pre))
 
 
 
@@ -153,20 +137,23 @@ dict <- function(content=NULL) {
   return (dct)
 }
 
-transforms <- dict({
-  LV <- dict({
+transforms <- new.env(hash=TRUE)
+with(transforms, {
+  LV <- new.env(hash=TRUE)
+  HV <- new.env(hash=TRUE)
+  with(LV, {
     "ɒ" <- 180
     "i:" <- 0
     "ʊ" <- 180
     "ɪ" <- 180
     "ɜ:" <- 180
     "ʌ" <- 0
-    "æ" <- 180
+    "æ" <- 210
     "e" <- 180
     "ɔ:" <- 90
-    "ɑ:" <- 270
+    "ɑ:" <- 300
   })
-  HV <- dict({
+  with(HV, {
     "i:" <- 90
     "æ" <- 180
     "ɪ" <- 270
@@ -175,21 +162,32 @@ transforms <- dict({
     "ɑ:" <- 0
     "ʌ" <- 45
     "u:" <- 90
-    "ɒ" <- 270
+    "ɒ" <- 240
+      "ɔ:" <- 300
+      "ʊ" <- 270
   })
 })
 
-transforms.ssbe <- dict({
-  LV <- dict({
-    "ʌ" <- 270
+transforms.ssbe <- new.env(hash=TRUE)
+with(transforms.ssbe, {
+  LV <- new.env(hash=TRUE)
+  HV <- new.env(hash=TRUE)
+  with(LV, {
+    "ʌ" <- 180
     "e" <- 270
     "ɪ" <- 270
+    "ɑ:" <- 270
+    "ɒ" <- 0
+       "u:" <- 270
   })
-  HV <- dict({
+  with(HV, {
     "æ" <- 180
     "ɪ" <- 180
     "e" <- 180
-    "ʌ" <- 270
+    "ʌ" <- 210
+     "u:" <- 180
+     "ɒ" <- 0
+      "ɑ:" <- 270
   })
 })
 
@@ -197,14 +195,14 @@ lab.df <- label.transform(
   lab.df, x="f2", y="f1",
   groups=c("group"),
   transforms=transforms,
-  default=list(angle=0, r=0.2))
+  default=list(angle=0, r=0.22))
 
 ssbe.lab.df <- ssbe.lob.df[c("label", "group", "f1", "f2")]
 ssbe.lab.df <- label.transform(
   ssbe.lab.df, x="f2", y="f1",
   groups=c("group"),
   transforms=transforms.ssbe,
-  default=list(angle=90, r=0.19))
+  default=list(angle=90, r=0.22))
 
 # Define colors
 colors <- {}
@@ -230,7 +228,7 @@ if (Sys.info()["sysname"] == "Darwin") {
 
 showtext_opts(dpi=dpi)
 width = 6.5
-height = 3
+height = 4
 
 # Start plot and set some theme stuff
 p <- ggplot(data=) + theme(
@@ -241,7 +239,7 @@ p <- ggplot(data=) + theme(
     linetype="13",
     lineend="round"),
   axis.ticks=element_blank(),
-  legend.position="right",
+  legend.position="bottom",
   legend.key=element_rect(
     fill="transparent",
     colour="transparent"),
@@ -258,7 +256,7 @@ p <- p + scale_x_reverse(
   breaks=seq(-3,3,1),
   labels=seq(-3,3,1))
 # Add limits here to prevent filtering of data
-p <- p + coord_cartesian(xlim=c(2,-2), ylim=c(2, -2))
+p <- p + coord_cartesian(xlim=c(2.1,-2.1), ylim=c(2.1, -2.1))
 
 # Add SSBE points...
 p <- p + geom_point(
@@ -289,7 +287,7 @@ p <- p + geom_segment(
 p <- p + geom_point(
   data=lob.mn.df,
   aes(x=f2, y=f1, color=test),
-  size=3)
+  size=2.75)
 p <- p + scale_color_manual(
   values=c(colors$pre, colors$post),
   name="Test")
