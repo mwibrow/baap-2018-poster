@@ -52,6 +52,7 @@ fontSize <- 40
 bhat.df$test <- relevel(factor(bhat.df$test), ref="pre")
 bhat.df$group <- factor(bhat.df$group, levels=c("LV", "HV"))
 
+
 p <- ggplot() + theme(
     legend.position="none",
     legend.key=element_rect(
@@ -84,5 +85,5 @@ p <- p + geom_segment(
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, color="white")
 
 
-ggsave("vowel-plot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave("bhattacharyya-plot.png", width=width, height=height, units="in", dpi=dpi)
 
