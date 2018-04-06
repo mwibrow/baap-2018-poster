@@ -24,8 +24,8 @@ lobanov <- function(df, f1="f1", f2="f2", vowel="vowel", group=c(), reduce=TRUE)
       f1.vwl.nrm <- (f1.vwl - mn.f1.grp) / sd.f1.grp
       f2.vwl.nrm <- (f2.vwl - mn.f2.grp) / sd.f2.grp
       if (reduce) {
-        f1.vwl.nrm <- mean(f1.vwl.nrm)
-        f2.vwl.nrm <- mean(f2.vwl.nrm)
+        f1.vwl.nrm <- median(f1.vwl.nrm)
+        f2.vwl.nrm <- median(f2.vwl.nrm)
       }
       data.frame(f1=f1.vwl.nrm, f2=f2.vwl.nrm)
     })
@@ -50,7 +50,12 @@ ssbe.df <- data.frame(
   f1=c(273, 386, 527, 751, 655, 552, 452, 397, 291, 623, 527),
   f2=c(2289, 2038, 1801, 1558, 1044, 986, 793, 1550, 1672, 1370, 1528))
 
-ssbe.lob.df <- lobanov(ssbe.df)
+ssbe.df <- read.csv(file.path(dataDir, "hawkins_midgely_2005.csv"))
+
+ssbe.lob.df <- lobanov(ssbe.df, group=c("speaker"))
+ssbe.lob.df <- ddply(ssbe.lob.df, c("vowel"), function(subset) {
+  data.frame(f1=mean(subset$f1), f2=mean(subset$f2))
+})
 ssbe.lob.df$label <- ipa[as.character(ssbe.lob.df$vowel)]
 
 ssbe.lob.df <- rbind(
@@ -245,13 +250,13 @@ p <- ggplot(data=) + theme(
 p <- p + scale_y_reverse(
   expand=c(0.02,0.02),
   minor_breaks=c(),
-  breaks=seq(-2,2,1),
-  labels=seq(-2,2,1))
+  breaks=seq(-3,3,1),
+  labels=seq(-3,3,1))
 p <- p + scale_x_reverse(
   expand=c(0.02,0.02),
   minor_breaks=c(),
-  breaks=seq(-2,2,1),
-  labels=seq(-2,2,1))
+  breaks=seq(-3,3,1),
+  labels=seq(-3,3,1))
 # Add limits here to prevent filtering of data
 p <- p + coord_cartesian(xlim=c(2,-2), ylim=c(2, -2))
 
