@@ -63,8 +63,9 @@ bx.df <- ddply(axb.df, c("group", "test", "participant", "Pair"), function(subse
 names(bx.df)[names(bx.df) == "test"] <- "Test"
 names(bx.df)[names(bx.df) == "group"] <- "Group"
 
+bx.df$Group <- factor(bx.df$Group, levels=c("LV", "HV"))
 width <- 8
-height <- 4.5
+height <- 4
 dpi <- 600
 
 if (Sys.info()["sysname"] == "Darwin") {
@@ -109,8 +110,10 @@ p <- p + facet_grid(Group~.)
 
 # Now add the medians. This must come after setting the facets.
 dat <- ggplot_build(p)$data[[1]]
+
 dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
 dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
+datGroup <- factor(dat$Group, levels=c("LV", "HV"))
 p <- p + geom_segment(
   data=dat,
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour=MD)

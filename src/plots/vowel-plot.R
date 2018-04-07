@@ -228,7 +228,7 @@ if (Sys.info()["sysname"] == "Darwin") {
 
 showtext_opts(dpi=dpi)
 width = 6.5
-height = 4
+height = 3
 
 # Start plot and set some theme stuff
 p <- ggplot(data=) + theme(
@@ -239,7 +239,7 @@ p <- ggplot(data=) + theme(
     linetype="13",
     lineend="round"),
   axis.ticks=element_blank(),
-  legend.position="bottom",
+  legend.position="right",
   legend.key=element_rect(
     fill="transparent",
     colour="transparent"),
@@ -263,7 +263,7 @@ p <- p + geom_point(
   data=ssbe.lob.df,
   aes(x=f2, y=f1, fill="SSBE"),
   color=colors$ssbe,
-  size=3)
+  size=2)
 # ...and SSBE labels
 p <- p + geom_text(
   data=ssbe.lab.df,
@@ -271,7 +271,7 @@ p <- p + geom_text(
   color=colors$ssbe.label,
   family="DejaVuSans",
   vjust=0.4,
-  size=fontSize*0.333)
+  size=fontSize*0.3)
 # Add an extra legend entry
 p <- p + scale_fill_manual("", breaks = "SSBE", values=colors$ssbe)
 
@@ -287,7 +287,7 @@ p <- p + geom_segment(
 p <- p + geom_point(
   data=lob.mn.df,
   aes(x=f2, y=f1, color=test),
-  size=2.75)
+  size=2)
 p <- p + scale_color_manual(
   values=c(colors$pre, colors$post),
   name="Test")
@@ -299,7 +299,7 @@ p <- p + geom_text(
   colour=colors$ipa,
   family="DejaVuSans",
   vjust=0.4,
-  size=fontSize*0.4)
+  size=fontSize*0.3)
 
 p <- p +  ylab("F1 (Lobanov)")
 p <- p +  xlab("F2 (Lobanov)")

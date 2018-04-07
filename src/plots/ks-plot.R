@@ -32,6 +32,29 @@ vwl.df$speaker <- sapply(vwl.df$participant, FUN=function(x) sub("(C[0-9]+).*?([
 lob.df <- lobanov(vwl.df, group=c('group', 'test', 'speaker'))
 lob.df <- subset(lob.df, vowel %in% monophthongs)
 
+pre.rows <- nrow(lob.df)
+lob.df <- ddply(lob.df, c("group", "test", "vowel"), function(d){
+  f1.z <- scale(d$f1, center=TRUE, scale=TRUE)
+  f2.z <- scale(d$f2, center=TRUE, scale=TRUE)
+  f1.mad <- median(abs(d$f1 - median(d$f1)))
+  f2.mad <- median(abs(d$f2 - median(d$f2)))
+  f1.mad.dev <- abs(d$f1 - median(d$f1)) / f1.mad
+  f2.mad.dev <- abs(d$f2 - median(d$f2)) / f1.mad
+  cbind(d,
+    data.frame(
+      f1.z,
+      f2.z,
+      f1.z.out=abs(f1.z) > 2.5,
+      f2.z.out=abs(f2.z) > 2.5,
+      f1.mad.out=f1.mad.dev > 3,
+      f2.mad.out=f2.mad.dev > 3
+    )
+  )
+})
+lob.df <- subset(lob.df)#, !f1.mad.out & !f2.mad.out)
+post.rows <- nrow(lob.df)
+cat(sprintf("Removed %d outliers\n", pre.rows - post.rows))
+
 ks.df <- ddply(lob.df, c("group", "test"), function(d) {
     ddply(d, "vowel", function(e) {
         vwl = as.character(unique(e$vowel))
@@ -51,13 +74,11 @@ ks.df <- ddply(lob.df, c("group", "test"), function(d) {
 })
 
 dpi <- 300
-width <- 4
-height <- 5
-options(repr.plot.width=width, repr.plot.height=height)
+
 
 fontSize <- 40
 width <- 6
-height <- 5
+height <- 3.5
 options(repr.plot.width=width, repr.plot.height=height)
 
 p <- ggplot() + theme(
@@ -71,9 +92,18 @@ p <- ggplot() + theme(
     text=element_text(family="Cabin", size=fontSize),
     axis.title.x = element_text(margin = margin(t = 5, r = 0, b = 0, l = 0))) +
     xlab("Test") +
-    ylab("Kolmogorov–Smirnov distance")
+    ylab("K-S distance")
 
 p <- p + geom_boxplot(data=ks.df, aes(x=test, y=distance, color=test, fill=test))
+
+p <- p + scale_y_continuous(
+  minor_breaks=c(),
+  breaks=seq(0,1,.2),
+  labels=seq(0,1,.2))
+
+# Add limits here to prevent filtering of data
+p <- p + coord_cartesian(ylim=c(0,.85))
+
 p <- p + scale_color_manual(
   values=c(pre=colors$pre, post=colors$post),
   name="Test")
@@ -95,3 +125,4 @@ p <- p + geom_segment(
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour="white")
 
 ggsave("ks-plot.png", width=width, height=height, units="in", dpi=dpi)
+
