@@ -9,11 +9,27 @@
 \usepackage{baap-2018-poster}
 \usepackage{multicol}
 %\usepackage[allfiguresdraft]{draftfigure}
+\usepackage{tikz}
+\renewcommand{\thefigure}{\Alph{figure}}
 
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0pt}
-
-
+\newbox\tikzfigurebox%
+\tikzset{%
+  figure label/.style={circle, font=\large\bfseries, inner sep=0.125in, outer sep=0,
+  fill=kau-light-blue,text=White}
+}
+\newenvironment{tikzfigure}[1][]{%
+\expandafter\xdef\csname tikzfigure@label@#1\endcsname{\thefigure}%
+\setbox\tikzfigurebox=\hbox\bgroup}
+{\egroup\begin{tikzpicture}%
+\node (@) [anchor=south, inner sep=0, outer sep=0]{\box\tikzfigurebox};
+\node [figure label] at (@.north west) {\thefigure};
+\setbox0=\vbox{\caption{somecaption}}
+\end{tikzpicture}}
+\def\tikzfigureref#1{%
+\tikz[baseline=(@.base)]\node[figure label, anchor=base, font=\small\bfseries]{\csname tikzfigure@label@#1\endcsname};
+}
 \setbeamertemplate{caption}[numbered]
 
 \setlength{\leftmargini}{1.25em}
@@ -60,7 +76,7 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 
 \begin{columns}[t]
 
-\begin{column}{0.45\linewidth}
+\begin{column}{0.4\linewidth}
 \begin{block}{Introduction}
   \begin{itemize}
     \item \Cabin
@@ -139,7 +155,7 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
   18 vowels in \ipa{/hVd/} context by 1 SSBE female speaker
 \end{itemize}
 \begin{center}
-  \begin{tabular}{ll@{\hskip2ex}ll@{\hskip2ex}ll@{\hskip2ex}ll@{\hskip2ex}ll@{\hskip2ex}ll}
+  \begin{tabular}{ll@{\hskip1.5ex}ll@{\hskip1.5ex}ll@{\hskip1.5ex}ll@{\hskip1.5ex}ll@{\hskip1.5ex}ll}
     \word{heed}   & \ipa{/i:/} &
     \word{hid}    & \ipa{/ɪ/}  &
     \word{head}   & \ipa{/e/}  &
@@ -223,55 +239,55 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
     \includegraphics[width=\linewidth]{images/CALVin-screenshots/jpgs/watch_example}
   \end{column}
 \end{columns}
-\vspace*{1ex}
-\caption{Screenshots from CALVin}
+\setbox0=\vbox{\caption{}}
 \end{figure}
 \end{block}
 
 \end{column}
-\begin{column}{0.5\linewidth}
+\begin{column}{0.525\linewidth}
 \begin{block}{Results}
 \paragraph{Perception (category discrimination)}
 
 \vspace*{0.25in}
-\begin{figure}
-\includegraphics[width=\linewidth]{plots/axb-boxplot.png}
-\caption{\label{axb-boxplot}
-Box plots for the category discrimination task}
+\begin{figure}[h]
+\begin{tikzfigure}
+\includegraphics[width=0.95\linewidth]{plots/axb-boxplot.png}
+\end{tikzfigure}
 \end{figure}
 \paragraph{Production (imitation task)}
 
 \begin{figure}[h]
-\includegraphics[width=\linewidth]{plots/vowel-plot.png}
-\caption{\label{vowel-plot}
-  Mean normalised formants for 11 monophthongs. SSBE formants
-taken from \cite{hawkins_midgely_2005}}
+\begin{tikzfigure}[vowel-plot]
+\includegraphics[width=0.95\linewidth]{plots/vowel-plot.png}
+\end{tikzfigure}
 \end{figure}
+
 
 
 \begin{figure}[h]
 
-
-\includegraphics[width=0.48\linewidth]{plots/ks-plot.png}
+\begin{tikzfigure}[ks-plot]
+\includegraphics[width=0.45\linewidth]{plots/ks-plot.png}
+\end{tikzfigure}
 \hfill
-\includegraphics[width=0.24\linewidth]{plots/duration-plot.png}
-\includegraphics[width=0.24\linewidth]{plots/duration-model.png}
-\caption{\label{ks-duration-plot}
-  Distance between monophthongs produced by participants and SSBE speakers (left)
-and monophthong duration for the participants (right)}
-  \end{figure}
+\begin{tikzfigure}[duration-plot]
+\includegraphics[width=0.225\linewidth]{plots/duration-plot.png}
+\includegraphics[width=0.225\linewidth]{plots/duration-model.png}
+\end{tikzfigure}
+
+\end{figure}
 
 \begin{itemize}
 \item Both LV and HV children show changes in most vowel production
-between pre- and post- test (figure~\ref{vowel-plot})
+between pre- and post- test \tikzfigureref{vowel-plot}
 \item
 Kolmogorov-Smirnov (K-S) distance between children and SSBE
 speaker's f1
-decreases between pre- and post- test (figure~\ref{ks-duration-plot} left) although
+decreases between pre- and post- test \tikzfigureref{ks-plot} although
 this is not significant
 
 \item
- Monophthong duration (figure~\ref{ks-duration-plot} right)
+ Monophthong duration \tikzfigureref{duration-plot}
  increases significantly between pre- and post- test
  (F=68.532, p <0.0001)
 \end{itemize}
