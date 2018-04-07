@@ -29,8 +29,8 @@ cat(sprintf("Removed %d outliers\n", pre.rows - post.rows))
 
 
 dpi <- 300
-width <- 3
-height <- 3.5
+width <- 2
+height <- 2.5
 options(repr.plot.width=width, repr.plot.height=height)
 
 fontSize <- 40
@@ -43,6 +43,8 @@ p <- ggplot() + theme(
     lineend="round"),
    text=element_text(family="Cabin", size=fontSize),
   axis.ticks=element_blank(),
+   axis.text.x = element_text(size=fontSize*0.75),
+    axis.text.y = element_text(size=fontSize*0.75),
   legend.position="none",
   legend.key=element_rect(
     fill="transparent",

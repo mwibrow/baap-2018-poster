@@ -77,8 +77,8 @@ dpi <- 300
 
 
 fontSize <- 40
-width <- 6
-height <- 3.5
+width <- 4
+height <- 2.5
 options(repr.plot.width=width, repr.plot.height=height)
 
 p <- ggplot() + theme(
@@ -90,6 +90,8 @@ p <- ggplot() + theme(
     panel.grid.major=element_line(color="#ffffff", linetype="13", lineend="round"),
     axis.ticks = element_blank(),
     text=element_text(family="Cabin", size=fontSize),
+     axis.text.x = element_text(size=fontSize*0.75),
+    axis.text.y = element_text(size=fontSize*0.75),
     axis.title.x = element_text(margin = margin(t = 5, r = 0, b = 0, l = 0))) +
     xlab("Test") +
     ylab("K-S distance")

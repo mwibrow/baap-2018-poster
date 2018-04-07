@@ -65,7 +65,7 @@ names(bx.df)[names(bx.df) == "group"] <- "Group"
 
 bx.df$Group <- factor(bx.df$Group, levels=c("LV", "HV"))
 width <- 8
-height <- 4
+height <- 3.5
 dpi <- 600
 
 if (Sys.info()["sysname"] == "Darwin") {
