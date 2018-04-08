@@ -73,7 +73,7 @@ ks.df <- ddply(lob.df, c("group", "test"), function(d) {
     })
 })
 
-dpi <- 300
+dpi <- DPI
 
 
 fontSize <- 40

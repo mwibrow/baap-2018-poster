@@ -102,6 +102,7 @@ acc.cnf.df <- ddply(crt.cnf.df, c("group", "test", "speaker"), function(d) {
 font_add("Cabin", "../fonts/Cabin/Cabin-Regular.ttf")
 font_add("Cabin-Italic", "../fonts/Cabin/Cabin-Italic.ttf")
 font_add("DejaVuSans", "../fonts/dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf")
+
 showtext_auto()
 
 
@@ -114,12 +115,12 @@ options(repr.plot.width=width, repr.plot.height=height)
 acc.cnf.df$test <- relevel(factor(acc.cnf.df$test), ref="pre")
 acc.cnf.df$group <- factor(acc.cnf.df$group, levels=c("LV", "HV"))
 
-dpi <- 300
+dpi <- DPI
 
-
-fontSize <- 40
+showtext_opts(dpi=dpi)
+fontSize <- 12
 width <- 4
-height <- 2.5
+height <- 2.75
 options(repr.plot.width=width, repr.plot.height=height)
 
 p <- ggplot() + theme(

@@ -42,13 +42,15 @@ cf.df <- data.frame(
 cf.df$test <- factor(cf.df$test, levels=c("pre", "post"))
 cf.df$group <- factor(cf.df$group, levels=c("LV", "HV"))
 
-dpi <- 300
+dpi <- DPI
 width <- 2
-height <- 2.5
+height <- 2.75
+
+
+showtext_opts(dpi=dpi)
+fontSize <- 12
+
 options(repr.plot.width=width, repr.plot.height=height)
-
-fontSize <- 40
-
 p <- ggplot(data=cf.df)
 p <- p + theme(
     legend.position="none",

@@ -218,16 +218,13 @@ with(colors, {
   panel.grid <- "#ffffff"
 })
 
-dpi = 600
+dpi <- DPI
 
-if (Sys.info()["sysname"] == "Darwin") {
-  fontSize <- 12
-} else {
-  fontSize <- 12
-}
+
 
 showtext_opts(dpi=dpi)
-width = 6.5
+fontSize <- 12
+width = 6.25
 height = 3
 
 # Start plot and set some theme stuff
@@ -243,10 +240,14 @@ p <- ggplot(data=) + theme(
   legend.key=element_rect(
     fill="transparent",
     colour="transparent"),
-  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)))
+  axis.title.x = element_text(
+    margin = margin(t = 7.5, r = 0, b = 0, l = 0),
+    size=fontSize*0.875),
+  axis.title.y = element_text(
+    size=fontSize*0.875))
 # Reverse scales
 p <- p + scale_y_reverse(
-  expand=c(0.02,0.02),
+  expand=c(-0.01,-0.01),
   minor_breaks=c(),
   breaks=seq(-3,3,1),
   labels=seq(-3,3,1))

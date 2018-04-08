@@ -28,12 +28,13 @@ post.rows <- nrow(vwl.df)
 cat(sprintf("Removed %d outliers\n", pre.rows - post.rows))
 
 
-dpi <- 300
+dpi <- DPI
 width <- 2
-height <- 2.5
+height <- 2.75
 options(repr.plot.width=width, repr.plot.height=height)
 
-fontSize <- 40
+showtext_opts(dpi=dpi)
+fontSize <- 12
 
 p <- ggplot() + theme(
   panel.background=element_rect(fill=colors$panel.background),

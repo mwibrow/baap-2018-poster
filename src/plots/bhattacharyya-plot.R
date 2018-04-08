@@ -69,7 +69,7 @@ bhat.df <- ddply(lob.df, c("group", "test"), function(d) {
     })
 })
 
-dpi <- 300
+dpi <- DPI
 width <- 3
 height <- 3.5
 options(repr.plot.width=width, repr.plot.height=height)
