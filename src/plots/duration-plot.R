@@ -64,8 +64,8 @@ p <- p + xlab("Test") +
 p <- p + scale_y_continuous(
   expand=c(0.02,0.02),
   minor_breaks=c(),
-  breaks=seq(0,600,100),
-  labels=seq(0,600,100))
+  breaks=seq(0,600,150),
+  labels=seq(0,600,150))
 
 # Add limits here to prevent filtering of data
 p <- p + coord_cartesian(ylim=c(0,600))
