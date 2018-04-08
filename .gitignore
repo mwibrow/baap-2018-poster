@@ -15,5 +15,5 @@ color_profiles/
 /data/
 /src/data/
 
-src/plots/*.png
+src/plots/images/*.png
 poster.pdf

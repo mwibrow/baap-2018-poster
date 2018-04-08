@@ -25,9 +25,9 @@ biber:
 	BIBINPUTS="$(BIBINPUTS)" $(biber) $(output_dir)/$(jobname)
 
 paths:
-	mkdir -p build
+	mkdir -p build src/plots/images
 
-plots:
+plots: paths
 	@ cd $(plots); \
 	for script in *.R; do echo Executing $$script; Rscript $$script; done
 

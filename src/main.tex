@@ -11,7 +11,6 @@
 %\usepackage[allfiguresdraft]{draftfigure}
 \usepackage{tikz}
 \renewcommand{\thefigure}{\Alph{figure}}
-
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0pt}
 \newbox\tikzfigurebox%
@@ -259,14 +258,13 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 \vspace*{0.25in}
 \begin{figure}[h]
 \begin{tikzfigure}[axb-plot]
-\includegraphics[width=0.95\linewidth]{plots/axb-boxplot.png}
+\includegraphics[width=0.95\linewidth]{plots/images/axb-boxplot.png}
 \end{tikzfigure}
 \end{figure}
-
-
+\vspace*{-0.25in}
 \begin{figure}[h]
 \begin{tikzfigure}[vowel-plot]
-\includegraphics[width=0.95\linewidth]{plots/vowel-plot.png}
+\includegraphics[width=0.95\linewidth]{plots/images/vowel-plot.png}
 \end{tikzfigure}
 \end{figure}
 
@@ -274,13 +272,13 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 
 \begin{figure}[h]
 
-\begin{tikzfigure}[ks-plot]
-\includegraphics[width=0.45\linewidth]{plots/ks-plot.png}
+\begin{tikzfigure}[mahalanobis-plot]
+\includegraphics[width=0.45\linewidth]{plots/images/mahalanobis-plot.png}
 \end{tikzfigure}
 \hfill
 \begin{tikzfigure}[duration-plot]
-\includegraphics[width=0.225\linewidth]{plots/duration-plot.png}
-\includegraphics[width=0.225\linewidth]{plots/duration-model.png}
+\includegraphics[width=0.225\linewidth]{plots/images/duration-plot.png}
+\includegraphics[width=0.225\linewidth]{plots/images/duration-model.png}
 \end{tikzfigure}
 
 \end{figure}
@@ -301,11 +299,13 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 \begin{itemize}
 \item Both LV and HV children show changes in most vowel production
 between pre- and post- test \tikzfigureref{vowel-plot}
+(SSBE vowels based on \citep{hawkins_midgely_2005})
 \item
-Kolmogorov-Smirnov (K-S) distance between children and SSBE
-speaker's f1
-decreases between pre- and post- test \tikzfigureref{ks-plot} although
-this is not significant
+Mahalanobis-distance classification according to SSBE model
+(using data from \citep{hawkins_midgely_2005})
+shows improvement for LV speakers between pre- and post- test
+\tikzfigureref{mahalanobis-plot}
+although this just fails to reach significance (p=0.0528)
 
 \item
  Monophthong duration \tikzfigureref{duration-plot}

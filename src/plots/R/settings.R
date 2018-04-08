@@ -104,4 +104,6 @@ with(colors, {
 })
 
 
-
+outDir <- "images"
+inDir <- "data"
+dataDir <- inDir

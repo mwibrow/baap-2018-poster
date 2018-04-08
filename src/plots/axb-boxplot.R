@@ -1,3 +1,5 @@
+source(file.path("R", "settings.R"))
+
 # Ensure packages are installed
 list.of.packages <- c("ggplot2", "showtext", "plyr", "reshape2", "stringr")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -118,4 +120,4 @@ p <- p + geom_segment(
   data=dat,
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour=MD)
 #
-ggsave("axb-boxplot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave(file.path(outDir, "axb-boxplot.png"), width=width, height=height, units="in", dpi=dpi)

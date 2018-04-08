@@ -126,5 +126,5 @@ p <- p + geom_segment(
   data=dat,
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour="white")
 
-ggsave("ks-plot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave(file.path(outDir, "ks-plot.png"), width=width, height=height, units="in", dpi=dpi)
 

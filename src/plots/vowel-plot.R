@@ -306,6 +306,6 @@ p <- p +  xlab("F2 (Lobanov)")
 p <- p + facet_grid(.~group)
 
 options(repr.plot.width=width, repr.plot.height=height)
-ggsave("vowel-plot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave(file.path(outDir, "vowel-plot.png"), width=width, height=height, units="in", dpi=dpi)
 
 

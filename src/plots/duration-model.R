@@ -88,6 +88,6 @@ p <- p + scale_fill_manual(
 
 p <- p + facet_grid(.~group)
 
-ggsave('duration-model.png',width=width, height=height, units="in", dpi=dpi)
+ggsave(file.path(outDir, "duration-model.png"),width=width, height=height, units="in", dpi=dpi)
 
 

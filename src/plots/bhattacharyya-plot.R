@@ -120,5 +120,5 @@ p <- p + geom_segment(
   aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, color="white")
 
 
-ggsave("bhattacharyya-plot.png", width=width, height=height, units="in", dpi=dpi)
+ggsave(file.path(outDir, "bhattacharyya-plot.png"), width=width, height=height, units="in", dpi=dpi)
 
