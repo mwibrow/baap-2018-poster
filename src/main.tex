@@ -1,7 +1,7 @@
 % -*- coding: utf-8 -*-
 % !TEX program = latexmk -outdir=./build -pdflatex=lualatex -synctex=1 -interaction=nonstopmode -file-line-error -pdf
 \documentclass[final,xcolor={cmyk,hyperref}]{beamer}
-\usepackage[orientation=portrait, size=a0, scale=1.25]{beamerposter}
+\usepackage[orientation=portrait, size=a0, scale=1.26]{beamerposter}
 \usepackage{pdfrender}
 \usepackage[pdf15,x-1a1]{pdfx}
 \FOGRAXXXIX
@@ -24,11 +24,13 @@
 \setbox\tikzfigurebox=\hbox\bgroup}
 {\egroup\begin{tikzpicture}%
 \node (@) [anchor=south, inner sep=0, outer sep=0]{\box\tikzfigurebox};
-\node [figure label] at (@.north west) {\thefigure};
+\node [figure label, anchor=north]
+at ([shift=(90:0.25in)]@.north west) {\thefigure};
 \setbox0=\vbox{\caption{somecaption}}
 \end{tikzpicture}}
-\def\tikzfigureref#1{%
-\tikz[baseline=(@.base)]\node[figure label, anchor=base, font=\small\bfseries]{\csname tikzfigure@label@#1\endcsname};
+\def\tikzfigureref#1{\hskip0.125ex
+\tikz[baseline=(@.base)]\node[figure label,
+anchor=base, inner sep=0.333ex, font=\small\bfseries]{\csname tikzfigure@label@#1\endcsname};
 }
 \setbeamertemplate{caption}[numbered]
 
@@ -96,7 +98,7 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
  in that training appeared to be domain-specific
  \item
  The current study adapts CALVin for children in order to investigate the effect of
- HV and LV training on Arabic children
+ HV and LV production training on Arabic children
   \end{itemize}
 \end{block}
 
@@ -241,20 +243,26 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 \end{columns}
 \setbox0=\vbox{\caption{}}
 \end{figure}
+\vspace*{0.25in}
+\begin{itemize}
+  \item Provides audio, video and images for carrier words
+  \item Shows an animated vocal tract for individual vowels
+  \item Enables pariticipants to record and practice vowel production
+\end{itemize}
 \end{block}
 
 \end{column}
 \begin{column}{0.525\linewidth}
 \begin{block}{Results}
-\paragraph{Perception (category discrimination)}
+
 
 \vspace*{0.25in}
 \begin{figure}[h]
-\begin{tikzfigure}
+\begin{tikzfigure}[axb-plot]
 \includegraphics[width=0.95\linewidth]{plots/axb-boxplot.png}
 \end{tikzfigure}
 \end{figure}
-\paragraph{Production (imitation task)}
+
 
 \begin{figure}[h]
 \begin{tikzfigure}[vowel-plot]
@@ -277,6 +285,19 @@ Mark Wibrow\texorpdfstring{\,\textsuperscript{3} \and}{}}
 
 \end{figure}
 
+\paragraph{Perception (category discrimination)}
+
+\begin{itemize}
+  \item No significant improvement in category discrimination
+  for LV or HV participants between pre- and post- test \tikzfigureref{axb-plot}
+  \item
+  In line with previous results \cite{hattori_2009} where
+  production training did not benefit perception
+
+\end{itemize}
+
+\paragraph{Production (imitation task)}
+
 \begin{itemize}
 \item Both LV and HV children show changes in most vowel production
 between pre- and post- test \tikzfigureref{vowel-plot}
@@ -289,7 +310,8 @@ this is not significant
 \item
  Monophthong duration \tikzfigureref{duration-plot}
  increases significantly between pre- and post- test
- (F=68.532, p <0.0001)
+ for both LV and HV groups (F=68.532, p <0.0001)
+
 \end{itemize}
   \end{block}
 
@@ -299,6 +321,12 @@ this is not significant
 
 \begin{block}{Conclusions}
 
+\begin{itemize}
+  \item Perception results in line with previous research
+  \item Production results disappointing,
+  but maybe due to task demands (learning 18 vowels in 5 sessions)
+  \item Future research to focus on smaller subset of vowels
+\end{itemize}
 \end{block}
 
 \begin{block}{References}
