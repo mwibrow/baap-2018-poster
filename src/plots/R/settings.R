@@ -108,4 +108,4 @@ outDir <- "images"
 inDir <- "data"
 dataDir <- inDir
 
-DPI <- 600
+DPI <- 1200
