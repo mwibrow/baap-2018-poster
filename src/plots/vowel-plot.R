@@ -247,7 +247,7 @@ p <- ggplot(data=) + theme(
     size=fontSize*0.875))
 # Reverse scales
 p <- p + scale_y_reverse(
-  expand=c(-0.01,-0.01),
+  expand=c(0.02,0.02),
   minor_breaks=c(),
   breaks=seq(-3,3,1),
   labels=seq(-3,3,1))
