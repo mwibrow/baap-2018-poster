@@ -42,14 +42,14 @@ axb.file <- file.path("data", "AXB-data.csv")
 axb.df <- read.csv(file=axb.file, header=TRUE, sep=",")
 
 axb.df$participant <- apply(axb.df, 1, function(x){
-    paste(c(x["participant"], x["group"]), collapse="-")
+	paste(c(x["participant"], x["group"]), collapse="-")
 })
 axb.df$Pair <- apply(axb.df, 1, function(row) {
-    stimuli <- row[c("stim1", "stim2", "stim3")]
-    pair <- sort(unique(stimuli))
-    #label <- sprintf('%s-%s', pair[1], pair[2])#
-    label <- sprintf('/%s/ - /%s/', words[[pair[1]]], words[[pair[2]]])
-    return (label)
+	stimuli <- row[c("stim1", "stim2", "stim3")]
+	pair <- sort(unique(stimuli))
+	#label <- sprintf('%s-%s', pair[1], pair[2])#
+	label <- sprintf('/%s/ - /%s/', words[[pair[1]]], words[[pair[2]]])
+	return (label)
 })
 
 axb.df$test <- factor(axb.df$test, levels=c("pre", "post"))
@@ -57,10 +57,10 @@ axb.df$group <- factor(axb.df$group)
 axb.df$Pair <- factor(axb.df$Pair)
 
 bx.df <- ddply(axb.df, c("group", "test", "participant", "Pair"), function(subset) {
-    Trials <- nrow(subset)
-    Correct = sum(subset$correct.response)
-    Accuracy = Correct / Trials * 100
-    data.frame(Trials, Correct, Accuracy)
+	Trials <- nrow(subset)
+	Correct = sum(subset$correct.response)
+	Accuracy = Correct / Trials * 100
+	data.frame(Trials, Correct, Accuracy)
 })
 names(bx.df)[names(bx.df) == "test"] <- "Test"
 names(bx.df)[names(bx.df) == "group"] <- "Group"
@@ -79,42 +79,96 @@ MD <- "#FCE4EC"
 IPA <- "#176FC1"
 # Do the plot
 dodge <- position_dodge(0.875)
-p <- ggplot(bx.df, aes(x=Pair, y=Accuracy, fill=Test, color=Test)) +
-    geom_boxplot(position=dodge, aes(fill=Test, color=Test))
+p <- ggplot(
+  bx.df,
+  aes(
+    x=Pair,
+    y=Accuracy,
+    fill=Test,
+    color=Test)) +
+	geom_boxplot(
+    position=dodge,
+    aes(fill=Test, color=Test))
 
 # Axis stuff
-p <- p + scale_y_continuous(expand=c(0,5), limit=c(0, 100),
-                                minor_breaks=c(),
-                                breaks=seq(0,100,25),
-                                labels=seq(0,100,25))
+p <- p + scale_y_continuous(
+  expand=c(0, 5),
+  limit=c(0, 100),
+	minor_breaks=c(),
+	breaks=seq(0, 100, 25),
+	labels=seq(0, 100, 25))
 # Theme stuff
 p <- p + theme(
-    legend.position="right",
-    legend.key=element_rect(
-      fill="transparent",
-      colour="transparent"),
-    panel.background=element_rect(fill="#eeeeee"),
-    panel.grid.major=element_line(color="#ffffff", linetype="13", lineend="round"),
-    axis.ticks = element_blank(),
-    text=element_text(family="Cabin", size=fontSize),
-    axis.text.x = element_text(angle=45, hjust = 1, vjust=1, family="DejaVuSans", color=IPA),
-    axis.title.x = element_text(margin = margin(t = 5, r = 0, b = 0, l = 0))) +
-    ylab("Accuracy (%)")
-# Manually set colors
-p <- p + scale_fill_manual(values=c(POST, PRE))
-p <- p + scale_color_manual(values=c(POST, PRE))
+	# Set the default font
+	text=element_text(
+    family="Cabin",
+    size=fontSize),
+	# Set the legend position
+	legend.position="right",
+	# Remove the panel background and grid from the legend
+	legend.key=element_rect(
+	  fill="transparent",
+	  colour="transparent"),
+	# Change the color of the graph background
+	panel.background=element_rect(
+    fill="#eeeeee"),
+	# Make the grid lines dashed
+	panel.grid.major=element_line(
+    color="#ffffff",
+    linetype="13",
+    lineend="round"),
+	# Remove tick marks
+	axis.ticks = element_blank(),
+	# Set x-axis tick label properties
+	axis.text.x = element_text(
+    angle=45,
+    hjust=1,
+    vjust=1,
+    family="DejaVuSans",
+    color=IPA),
+	# Adjust the x-axis margins
+	axis.title.x = element_text(
+    margin=margin(t=5, r=0, b=0, l=0)))
 
-# Add the facet variable
+# Add custom axis labels
+p <- p +
+	xlab("Pair") +
+	ylab("Accuracy (%)")
+
+# Manually set colors
+p <- p + scale_fill_manual(
+  values=c(pre=PRE, post=POST))
+p <- p + scale_color_manual(
+  values=c(pre=PRE, post=POST))
+
+# Add the facet variable for multiple plots
 p <- p + facet_grid(Group~.)
 
 # Now add the medians. This must come after setting the facets.
 dat <- ggplot_build(p)$data[[1]]
-
-dat$Test <- rep(levels(bx.df$Test), times=nrow(dat) / 2)
-dat$Group <- rep(levels(bx.df$Group), each=nrow(dat) / 2)
-datGroup <- factor(dat$Group, levels=c("LV", "HV"))
+dat <- cbind(
+	with(
+    bx.df,
+    expand.grid(
+      Test=levels(Test),
+      Group=levels(Group))),
+	dat)
 p <- p + geom_segment(
   data=dat,
-  aes(x=xmin, xend=xmax, y=middle, yend=middle), lineend="square", inherit.aes=FALSE, colour=MD)
+  aes(
+    x=xmin,
+    xend=xmax,
+    y=middle,
+    yend=middle),
+  lineend="square",
+  inherit.aes=FALSE,
+  colour=MD)
 #
-ggsave(file.path(outDir, "axb-boxplot.png"), width=width, height=height, units="in", dpi=dpi)
+ggsave(
+  file.path(
+    outDir,
+    "axb-boxplot.png"),
+  width=width,
+  height=height,
+  units="in",
+  dpi=dpi)
