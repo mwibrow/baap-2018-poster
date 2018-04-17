@@ -108,4 +108,8 @@ outDir <- "images"
 inDir <- "data"
 dataDir <- inDir
 
-DPI <- 1200
+DPI <- as.numeric(Sys.getenv("DPI"))
+if (is.na(DPI)) {
+  DPI <- 300
+}
+cat(sprintf("Using %d dpi\n", DPI))

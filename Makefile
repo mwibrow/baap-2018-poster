@@ -12,8 +12,13 @@ src=$(input_dir)/$(target).tex
 plots=$(input_dir)/plots
 TEXINPUTS:=$(input_dir)//:$(TEXINPUTS)
 BIBINPUTS:=$(input_dir)//:$(BIBINPUTS)
+DPI=300
 
 all: plots poster
+
+final: DPI=1200
+final: all
+
 
 poster: paths latex biber rerun rererun
 	cp $(output_dir)/$(jobname).pdf ./
