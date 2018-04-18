@@ -10,15 +10,18 @@ jobname=poster
 cmyk_profile=color_profiles/AdobeICCProfiles/CMYK/CoatedFOGRA39.icc
 src=$(input_dir)/$(target).tex
 plots=$(input_dir)/plots
+screenshots=$(input_dir)/images/CALVin-screenshots
 TEXINPUTS:=$(input_dir)//:$(TEXINPUTS)
 BIBINPUTS:=$(input_dir)//:$(BIBINPUTS)
-DPI=300
+dpi=300
 
-all: plots poster
+underline=printf '=%.0s' {1..40}
 
-final: DPI=1200
+
+all: images plots poster
+
+final: dpi=1200
 final: all
-
 
 poster: paths latex biber rerun rererun
 	cp $(output_dir)/$(jobname).pdf ./
@@ -30,11 +33,24 @@ biber:
 	BIBINPUTS="$(BIBINPUTS)" $(biber) $(output_dir)/$(jobname)
 
 paths:
-	mkdir -p build src/plots/images
+	@ echo; echo Creating paths; echo `$(underline)`; \
+	mkdir -p build src/plots/images $(screenshots)/jpgs
 
 plots: paths
 	@ cd $(plots); \
+	echo; echo Creating plots; echo `$(underline)`; \
 	for script in *.R; do echo Executing $$script; Rscript $$script; done
+
+images: paths
+ifeq ($(dpi), 300)
+	@ cd $(screenshots); \
+	echo; echo Scaling and converting images; echo `$(underline)`; \
+	mogrify -verbose -format jpg -path jpgs -scale 25% pngs/*.png;
+else
+    @ cd $(screenshots); \
+	@ echo; echo Converting images; echo `$(underline)`; \
+	mogrify -verbose -format jpg -path jpgs pngs/*.png
+endif
 
 cmyk:
 	gs \
