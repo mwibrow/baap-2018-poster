@@ -30,10 +30,6 @@
 
 \usepackage{graphicx}  % Required for including images
 
-\edef\DPI{\directlua{tex.print(os.getenv("DPI"))}}
-\ifx\DPI\undefined
-\def\DPI{300}
-\fi
 \setbeamercolor{headline}{fg=White,bg=kau}
 \setbeamertemplate{headline}{%
 \vspace*{-0.5in}

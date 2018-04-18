@@ -7,14 +7,12 @@ syntex=1
 gs=gs
 target=main
 jobname=poster
-cmyk_profile=color_profiles/AdobeICCProfiles/CMYK/CoatedFOGRA39.icc
 src=$(input_dir)/$(target).tex
 plots=$(input_dir)/plots
 screenshots=$(input_dir)/images/CALVin-screenshots
 TEXINPUTS:=$(input_dir)//:$(TEXINPUTS)
 BIBINPUTS:=$(input_dir)//:$(BIBINPUTS)
 dpi=300
-
 underline=printf '=%.0s' {1..40}
 
 
@@ -39,6 +37,7 @@ paths:
 plots: paths
 	@ cd $(plots); \
 	echo; echo Creating plots; echo `$(underline)`; \
+	export DPI=$(dpi); \
 	for script in *.R; do echo Executing $$script; Rscript $$script; done
 
 images: paths
@@ -48,24 +47,10 @@ ifeq ($(dpi), 300)
 	mogrify -verbose -format jpg -path jpgs -scale 25% pngs/*.png;
 else
     @ cd $(screenshots); \
-	@ echo; echo Converting images; echo `$(underline)`; \
+	echo; echo Converting images; echo `$(underline)`; \
 	mogrify -verbose -format jpg -path jpgs pngs/*.png
 endif
 
-cmyk:
-	gs \
-		-o $(jobname)-cmyk.pdf \
-		-sDEVICE=pdfwrite \
-		-dOverrideICC=true \
-		-sProcessColorModel=DeviceCMYK \
-		-sColorConversionStrategy=CMYK \
-		-sColorConversionStrategyForImages=CMYK \
-		-sDefaultCMYKProfile=$(cmyk_profile) \
-		-sOutputCMYKProfile=$(cmyk_profile) \
-		-dEncodeColorImages=false \
-		-dRenderIntent=3 \
-		-dDeviceGrayToK=true \
-		$(jobname).pdf
 
 clear-fontcache:
 	luaotfload-tool --cache=erase
